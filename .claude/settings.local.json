@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\vinic\\\\Desktop\\\\projeto_final\" -Recurse -Force)",
+      "Bash(Select-Object FullName)",
+      "Bash(grep -E \"\\\\.\\(js|jsx\\)$\")",
+      "Bash(docker compose *)",
+      "Bash(xargs grep -l \"item\\\\|Item\")"
+    ]
+  }
+}

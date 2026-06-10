@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 750" font-family="Helvetica, Arial, sans-serif">
+  <style>
+    .state { fill: #e3f2fd; stroke: #0d47a1; stroke-width: 2; }
+    .state-final { fill: #c8e6c9; stroke: #1b5e20; stroke-width: 2; }
+    .state-reject { fill: #ffcdd2; stroke: #b71c1c; stroke-width: 2; }
+    .label { font-weight: bold; font-size: 12px; text-anchor: middle; }
+    .arrow { stroke: #2c3e50; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+    .arrow-label { font-size: 9px; fill: #2c3e50; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2c3e50" />
+    </marker>
+  </defs>
+
+  <text x="450" y="30" class="label" font-size="18">Máquina de Estados — Etapas da Ordem de Serviço</text>
+  <text x="450" y="50" class="arrow-label" font-size="11">Cada transição publica maintenance.step.updated no Topic Exchange oficina.events</text>
+
+  <!-- Linha principal vertical -->
+  <rect x="320" y="80" width="220" height="40" rx="20" class="state" />
+  <text x="430" y="105" class="label">RECEBIDO</text>
+
+  <rect x="320" y="150" width="220" height="40" rx="20" class="state" />
+  <text x="430" y="175" class="label">RELATO_REGISTRADO</text>
+
+  <rect x="320" y="220" width="220" height="40" rx="20" class="state" />
+  <text x="430" y="245" class="label">EM_DIAGNOSTICO</text>
+
+  <rect x="320" y="290" width="220" height="40" rx="20" class="state" />
+  <text x="430" y="315" class="label">CAUSA_IDENTIFICADA</text>
+
+  <rect x="320" y="360" width="220" height="40" rx="20" class="state" />
+  <text x="430" y="385" class="label">ORCAMENTO_ENVIADO</text>
+
+  <!-- Bifurcação aprovado/reprovado -->
+  <rect x="100" y="430" width="200" height="40" rx="20" class="state-reject" />
+  <text x="200" y="455" class="label">ORCAMENTO_REPROVADO</text>
+
+  <rect x="560" y="430" width="220" height="40" rx="20" class="state" />
+  <text x="670" y="455" class="label">ORCAMENTO_APROVADO</text>
+
+  <rect x="560" y="500" width="220" height="40" rx="20" class="state" />
+  <text x="670" y="525" class="label">PECAS_SOLICITADAS</text>
+
+  <rect x="560" y="570" width="220" height="40" rx="20" class="state" />
+  <text x="670" y="595" class="label">EM_REPARO</text>
+
+  <rect x="560" y="640" width="220" height="40" rx="20" class="state" />
+  <text x="670" y="665" class="label">TESTE_FINAL</text>
+
+  <rect x="320" y="640" width="200" height="40" rx="20" class="state-final" />
+  <text x="420" y="665" class="label">CONCLUIDO</text>
+
+  <rect x="320" y="700" width="200" height="40" rx="20" class="state-final" />
+  <text x="420" y="725" class="label">ENTREGUE</text>
+
+  <!-- Transições verticais -->
+  <line x1="430" y1="120" x2="430" y2="150" class="arrow" />
+  <line x1="430" y1="190" x2="430" y2="220" class="arrow" />
+  <line x1="430" y1="260" x2="430" y2="290" class="arrow" />
+  <line x1="430" y1="330" x2="430" y2="360" class="arrow" />
+
+  <!-- Bifurcação -->
+  <line x1="380" y1="400" x2="220" y2="430" class="arrow" />
+  <text x="270" y="420" class="arrow-label">budget.rejected</text>
+  <line x1="490" y1="400" x2="640" y2="430" class="arrow" />
+  <text x="540" y="420" class="arrow-label">budget.approved</text>
+
+  <!-- Caminho aprovado -->
+  <line x1="670" y1="470" x2="670" y2="500" class="arrow" />
+  <line x1="670" y1="540" x2="670" y2="570" class="arrow" />
+  <line x1="670" y1="610" x2="670" y2="640" class="arrow" />
+  <line x1="630" y1="660" x2="520" y2="660" class="arrow" />
+  <text x="570" y="650" class="arrow-label">workorder.completed</text>
+
+  <line x1="420" y1="680" x2="420" y2="700" class="arrow" />
+
+  <!-- Eventos publicados anotados ao lado -->
+  <text x="555" y="245" class="arrow-label">maintenance.step.diagnostico</text>
+  <text x="555" y="315" class="arrow-label">maintenance.step.causa</text>
+  <text x="555" y="385" class="arrow-label">budget.created</text>
+  <text x="800" y="525" class="arrow-label">parts.requested</text>
+  <text x="800" y="595" class="arrow-label">maintenance.step.reparo</text>
+</svg>

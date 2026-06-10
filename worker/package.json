@@ -1,0 +1,12 @@
+{
+  "name": "oficina-demo-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/worker.js"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.4"
+  }
+}

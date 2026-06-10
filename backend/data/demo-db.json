@@ -1,0 +1,10 @@
+{
+  "deprecated": true,
+  "message": "Este arquivo nao e mais usado pela aplicacao. Os dados estruturados da demo agora ficam no PostgreSQL do docker-compose.",
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "name": "oficina_demo",
+    "user": "oficina"
+  }
+}

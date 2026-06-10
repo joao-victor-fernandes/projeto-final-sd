@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" font-family="Helvetica, Arial, sans-serif">
+  <style>
+    .zone-cloud { fill: #e3f2fd; stroke: #1565c0; stroke-width: 2.5; stroke-dasharray: 6 4; }
+    .zone-edge { fill: #fff8e1; stroke: #f57f17; stroke-width: 2.5; stroke-dasharray: 6 4; }
+    .pod { fill: #ffffff; stroke: #424242; stroke-width: 1.8; }
+    .net { fill: #e0f7fa; stroke: #006064; stroke-width: 1.5; }
+    .label-zone { font-weight: bold; font-size: 14px; }
+    .label-title { font-weight: bold; font-size: 11px; text-anchor: middle; }
+    .label-sub { font-size: 9px; text-anchor: middle; fill: #555; }
+    .arrow { stroke: #2c3e50; stroke-width: 1.3; fill: none; marker-end: url(#arrow); }
+    .arrow-net { stroke: #006064; stroke-width: 1.5; fill: none; stroke-dasharray: 4 3; marker-end: url(#arrow-net); }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2c3e50" />
+    </marker>
+    <marker id="arrow-net" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#006064" />
+    </marker>
+  </defs>
+
+  <text x="500" y="30" class="label-title" font-size="18">Diagrama de Implantação Híbrido (Edge + Cloud)</text>
+
+  <!-- NUVEM -->
+  <rect x="20" y="60" width="960" height="320" rx="10" class="zone-cloud" />
+  <text x="40" y="85" class="label-zone" fill="#1565c0">NUVEM / DATACENTER</text>
+
+  <rect x="50" y="105" width="120" height="50" rx="4" class="net" />
+  <text x="110" y="125" class="label-title">CDN</text>
+  <text x="110" y="140" class="label-sub">Cloudflare</text>
+
+  <rect x="200" y="105" width="120" height="50" rx="4" class="net" />
+  <text x="260" y="125" class="label-title">Load Balancer</text>
+  <text x="260" y="140" class="label-sub">Layer 7</text>
+
+  <!-- Frontend pods -->
+  <rect x="350" y="105" width="100" height="50" rx="4" class="pod" />
+  <text x="400" y="125" class="label-title">Frontend Pod</text>
+  <text x="400" y="140" class="label-sub">Next.js</text>
+
+  <rect x="350" y="170" width="100" height="50" rx="4" class="pod" />
+  <text x="400" y="190" class="label-title">Frontend Pod</text>
+  <text x="400" y="205" class="label-sub">Next.js (replica)</text>
+
+  <!-- Backend pods -->
+  <rect x="470" y="105" width="100" height="50" rx="4" class="pod" />
+  <text x="520" y="125" class="label-title">Backend Pod</text>
+  <text x="520" y="140" class="label-sub">Express</text>
+
+  <rect x="470" y="170" width="100" height="50" rx="4" class="pod" />
+  <text x="520" y="190" class="label-title">Backend Pod</text>
+  <text x="520" y="205" class="label-sub">Express (replica)</text>
+
+  <!-- Postgres -->
+  <rect x="600" y="105" width="120" height="115" rx="4" class="pod" />
+  <text x="660" y="125" class="label-title">PostgreSQL</text>
+  <text x="660" y="140" class="label-sub">Cluster RDS</text>
+  <text x="660" y="160" class="label-sub">primary + replica</text>
+  <text x="660" y="180" class="label-sub">backup diário</text>
+
+  <!-- RabbitMQ cluster -->
+  <rect x="740" y="105" width="220" height="115" rx="4" class="pod" />
+  <text x="850" y="125" class="label-title">RabbitMQ Cluster (3 nós)</text>
+  <text x="850" y="142" class="label-sub">5 exchanges (Topic/Fanout/Direct/Headers/DLX)</text>
+  <text x="850" y="157" class="label-sub">quorum queues + federation upstream</text>
+  <text x="850" y="172" class="label-sub">management UI :15672</text>
+  <text x="850" y="200" class="label-sub">AMQP :5672</text>
+
+  <!-- Workers pods -->
+  <rect x="50" y="240" width="120" height="50" rx="4" class="pod" />
+  <text x="110" y="260" class="label-title">media-worker pods</text>
+  <text x="110" y="275" class="label-sub">N replicas</text>
+
+  <rect x="180" y="240" width="120" height="50" rx="4" class="pod" />
+  <text x="240" y="260" class="label-title">notification-worker</text>
+  <text x="240" y="275" class="label-sub">pods</text>
+
+  <rect x="310" y="240" width="120" height="50" rx="4" class="pod" />
+  <text x="370" y="260" class="label-title">inventory-worker</text>
+  <text x="370" y="275" class="label-sub">pods</text>
+
+  <rect x="440" y="240" width="120" height="50" rx="4" class="pod" />
+  <text x="500" y="260" class="label-title">audit-worker</text>
+  <text x="500" y="275" class="label-sub">pods</text>
+
+  <rect x="570" y="240" width="120" height="50" rx="4" class="pod" />
+  <text x="630" y="260" class="label-title">report-worker</text>
+  <text x="630" y="275" class="label-sub">pods (futuro)</text>
+
+  <rect x="700" y="240" width="120" height="50" rx="4" class="pod" />
+  <text x="760" y="260" class="label-title">billing-worker</text>
+  <text x="760" y="275" class="label-sub">pods (futuro)</text>
+
+  <rect x="830" y="240" width="130" height="50" rx="4" class="pod" />
+  <text x="895" y="260" class="label-title">Storage S3/R2</text>
+  <text x="895" y="275" class="label-sub">vídeos definitivos</text>
+
+  <text x="500" y="320" class="label-sub" fill="#1565c0">Kubernetes (3+ nós), HPA por worker. Observabilidade: Prometheus + Grafana + Loki.</text>
+  <text x="500" y="340" class="label-sub" fill="#1565c0">CI/CD com tags Docker e helm rollout. Secrets em Vault/KMS.</text>
+
+  <!-- Internet -->
+  <text x="500" y="400" class="label-zone" text-anchor="middle">Internet (HTTPS + AMQP TLS)</text>
+  <line x1="100" y1="380" x2="100" y2="420" class="arrow-net" />
+  <line x1="900" y1="380" x2="900" y2="420" class="arrow-net" />
+
+  <!-- EDGE -->
+  <rect x="20" y="430" width="960" height="240" rx="10" class="zone-edge" />
+  <text x="40" y="455" class="label-zone" fill="#f57f17">OFICINA (Edge)</text>
+
+  <rect x="50" y="475" width="120" height="50" rx="4" class="pod" />
+  <text x="110" y="495" class="label-title">4× Câmeras IP</text>
+  <text x="110" y="510" class="label-sub">RTSP/Onvif</text>
+
+  <rect x="180" y="475" width="120" height="50" rx="4" class="pod" />
+  <text x="240" y="495" class="label-title">4× Tablets</text>
+  <text x="240" y="510" class="label-sub">Mecânicos</text>
+
+  <rect x="310" y="475" width="120" height="50" rx="4" class="pod" />
+  <text x="370" y="495" class="label-title">1× Tablet</text>
+  <text x="370" y="510" class="label-sub">Recepção</text>
+
+  <rect x="440" y="475" width="120" height="50" rx="4" class="pod" />
+  <text x="500" y="495" class="label-title">1× Desktop</text>
+  <text x="500" y="510" class="label-sub">Gestor</text>
+
+  <rect x="570" y="475" width="120" height="50" rx="4" class="pod" />
+  <text x="630" y="495" class="label-title">Mini-broker</text>
+  <text x="630" y="510" class="label-sub">RabbitMQ (federado)</text>
+
+  <rect x="700" y="475" width="120" height="50" rx="4" class="pod" />
+  <text x="760" y="495" class="label-title">Edge Gateway</text>
+  <text x="760" y="510" class="label-sub">Node.js</text>
+
+  <rect x="830" y="475" width="130" height="50" rx="4" class="pod" />
+  <text x="895" y="495" class="label-title">NAS</text>
+  <text x="895" y="510" class="label-sub">RAID 10TB</text>
+
+  <text x="500" y="565" class="label-sub" fill="#f57f17">Switch L2/L3 + UPS + internet redundante (4G/5G de fallback)</text>
+  <text x="500" y="585" class="label-sub" fill="#f57f17">Funciona offline durante quedas — sincroniza quando link volta</text>
+
+  <line x1="630" y1="475" x2="900" y2="380" class="arrow-net" />
+  <text x="780" y="430" class="label-sub" fill="#006064">federation</text>
+
+  <line x1="895" y1="475" x2="895" y2="290" class="arrow-net" />
+  <text x="910" y="380" class="label-sub" fill="#006064">sync vídeos</text>
+
+  <text x="500" y="640" class="label-zone" text-anchor="middle" font-size="11" fill="#444">
+    Critério-chave: resiliência operacional — a oficina continua registrando evidências mesmo offline.
+  </text>
+</svg>

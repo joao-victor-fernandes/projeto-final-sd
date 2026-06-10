@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" font-family="Helvetica, Arial, sans-serif">
+  <style>
+    .room { fill: #f8f9fa; stroke: #2c3e50; stroke-width: 2; }
+    .room-tech { fill: #fff3cd; stroke: #856404; stroke-width: 2; }
+    .label-title { font-weight: bold; font-size: 13px; fill: #2c3e50; text-anchor: middle; }
+    .label-sub { font-size: 11px; fill: #495057; text-anchor: middle; }
+    .icon { font-size: 14px; }
+    .arrow { stroke: #2c3e50; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+    .net { stroke: #007bff; stroke-width: 1.5; stroke-dasharray: 4 3; fill: none; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2c3e50" />
+    </marker>
+  </defs>
+
+  <rect x="20" y="20" width="860" height="560" fill="none" stroke="#2c3e50" stroke-width="3" />
+  <text x="450" y="50" class="label-title" font-size="18">Planta da Oficina — visão lógica</text>
+
+  <!-- Recepção -->
+  <rect x="50" y="80" width="180" height="100" class="room" rx="4" />
+  <text x="140" y="110" class="label-title">Recepção</text>
+  <text x="140" y="130" class="label-sub">Atendente</text>
+  <text x="140" y="150" class="icon" text-anchor="middle">[Tablet]</text>
+
+  <!-- Galpões -->
+  <g>
+    <rect x="280" y="80" width="270" height="90" class="room" rx="4" />
+    <text x="415" y="105" class="label-title">Galpão 1 — Diagnóstico/Reparo</text>
+    <text x="415" y="125" class="label-sub">Câmera IP + Tablet do mecânico</text>
+    <text x="320" y="155" class="icon">[Câmera]</text>
+    <text x="500" y="155" class="icon">[Tablet]</text>
+  </g>
+  <g>
+    <rect x="280" y="190" width="270" height="90" class="room" rx="4" />
+    <text x="415" y="215" class="label-title">Galpão 2 — Diagnóstico/Reparo</text>
+    <text x="415" y="235" class="label-sub">Câmera IP + Tablet do mecânico</text>
+    <text x="320" y="265" class="icon">[Câmera]</text>
+    <text x="500" y="265" class="icon">[Tablet]</text>
+  </g>
+  <g>
+    <rect x="280" y="300" width="270" height="90" class="room" rx="4" />
+    <text x="415" y="325" class="label-title">Galpão 3 — Diagnóstico/Reparo</text>
+    <text x="415" y="345" class="label-sub">Câmera IP + Tablet do mecânico</text>
+    <text x="320" y="375" class="icon">[Câmera]</text>
+    <text x="500" y="375" class="icon">[Tablet]</text>
+  </g>
+  <g>
+    <rect x="280" y="410" width="270" height="90" class="room" rx="4" />
+    <text x="415" y="435" class="label-title">Galpão 4 — Diagnóstico/Reparo</text>
+    <text x="415" y="455" class="label-sub">Câmera IP + Tablet do mecânico</text>
+    <text x="320" y="485" class="icon">[Câmera]</text>
+    <text x="500" y="485" class="icon">[Tablet]</text>
+  </g>
+
+  <!-- Almoxarifado -->
+  <rect x="50" y="200" width="180" height="90" class="room" rx="4" />
+  <text x="140" y="225" class="label-title">Almoxarifado</text>
+  <text x="140" y="245" class="label-sub">Estoque de peças</text>
+  <text x="140" y="270" class="icon" text-anchor="middle">[Estoquista]</text>
+
+  <!-- Sala do gestor -->
+  <rect x="50" y="310" width="180" height="90" class="room" rx="4" />
+  <text x="140" y="335" class="label-title">Sala do Gestor</text>
+  <text x="140" y="355" class="label-sub">Dashboard oficina</text>
+  <text x="140" y="380" class="icon" text-anchor="middle">[Desktop]</text>
+
+  <!-- Sala técnica -->
+  <rect x="50" y="420" width="180" height="120" class="room-tech" rx="4" />
+  <text x="140" y="445" class="label-title">Sala Técnica</text>
+  <text x="140" y="465" class="label-sub">Gateway / Servidor local</text>
+  <text x="140" y="485" class="label-sub">+ NAS (vídeos brutos)</text>
+  <text x="140" y="505" class="label-sub">+ Mini-broker RabbitMQ</text>
+  <text x="140" y="525" class="label-sub">+ Switch L2/L3</text>
+
+  <!-- Conexão simbólica para nuvem -->
+  <rect x="640" y="80" width="220" height="100" fill="#e7f3ff" stroke="#007bff" stroke-width="2" rx="6" />
+  <text x="750" y="110" class="label-title">Nuvem / Datacenter</text>
+  <text x="750" y="130" class="label-sub">Backend, Postgres, RabbitMQ</text>
+  <text x="750" y="150" class="label-sub">Workers, Storage S3/R2</text>
+
+  <path d="M 230 480 Q 600 400 640 130" class="net" />
+  <text x="500" y="395" class="label-sub" fill="#007bff">Internet (federation + sync)</text>
+
+  <!-- Legenda -->
+  <text x="450" y="585" class="label-sub">Cada galpão tem câmera IP e tablet do mecânico. Sala técnica concentra gateway, NAS e broker local.</text>
+</svg>

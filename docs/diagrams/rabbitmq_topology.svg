@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" font-family="Helvetica, Arial, sans-serif">
+  <style>
+    .producer { fill: #c8e6c9; stroke: #2e7d32; stroke-width: 2; }
+    .ex-topic { fill: #ffe0b2; stroke: #e65100; stroke-width: 2.5; }
+    .ex-fanout { fill: #f8bbd0; stroke: #ad1457; stroke-width: 2.5; }
+    .ex-direct { fill: #c5cae9; stroke: #283593; stroke-width: 2.5; }
+    .ex-headers { fill: #d1c4e9; stroke: #4527a0; stroke-width: 2.5; }
+    .ex-dlx { fill: #ffcdd2; stroke: #b71c1c; stroke-width: 2.5; }
+    .queue { fill: #fff; stroke: #424242; stroke-width: 1.8; }
+    .worker { fill: #b3e5fc; stroke: #0277bd; stroke-width: 1.8; }
+    .label-title { font-weight: bold; font-size: 12px; text-anchor: middle; }
+    .label-sub { font-size: 10px; text-anchor: middle; fill: #555; }
+    .arrow { stroke: #2c3e50; stroke-width: 1.2; fill: none; marker-end: url(#arrow); }
+    .arrow-async { stroke: #d84315; stroke-width: 1.5; fill: none; marker-end: url(#arrow-async); }
+    .arrow-rk { font-size: 8px; fill: #2c3e50; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L8,3 z" fill="#2c3e50" />
+    </marker>
+    <marker id="arrow-async" markerWidth="8" markerHeight="8" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L8,3 z" fill="#d84315" />
+    </marker>
+  </defs>
+
+  <text x="500" y="25" class="label-title" font-size="18">Topologia RabbitMQ — Exchanges, Filas e Workers</text>
+
+  <!-- Producer -->
+  <rect x="40" y="60" width="140" height="60" rx="6" class="producer" />
+  <text x="110" y="85" class="label-title">Backend API</text>
+  <text x="110" y="105" class="label-sub">EventPublisher</text>
+
+  <!-- 5 Exchanges -->
+  <rect x="280" y="60" width="180" height="50" rx="6" class="ex-topic" />
+  <text x="370" y="80" class="label-title">oficina.events</text>
+  <text x="370" y="98" class="label-sub">Topic Exchange</text>
+
+  <rect x="280" y="130" width="180" height="50" rx="6" class="ex-fanout" />
+  <text x="370" y="150" class="label-title">oficina.broadcast</text>
+  <text x="370" y="168" class="label-sub">Fanout Exchange</text>
+
+  <rect x="280" y="200" width="180" height="50" rx="6" class="ex-direct" />
+  <text x="370" y="220" class="label-title">oficina.commands</text>
+  <text x="370" y="238" class="label-sub">Direct Exchange</text>
+
+  <rect x="280" y="270" width="180" height="50" rx="6" class="ex-headers" />
+  <text x="370" y="290" class="label-title">oficina.notifications</text>
+  <text x="370" y="308" class="label-sub">Headers Exchange</text>
+
+  <rect x="280" y="340" width="180" height="50" rx="6" class="ex-dlx" />
+  <text x="370" y="360" class="label-title">oficina.dlx</text>
+  <text x="370" y="378" class="label-sub">Dead Letter Exchange</text>
+
+  <!-- Setas backend -> exchanges -->
+  <line x1="180" y1="85" x2="280" y2="85" class="arrow-async" />
+  <line x1="180" y1="95" x2="280" y2="155" class="arrow-async" />
+  <line x1="180" y1="105" x2="280" y2="225" class="arrow-async" />
+  <line x1="180" y1="110" x2="280" y2="295" class="arrow-async" />
+
+  <!-- Queues bound to oficina.events -->
+  <rect x="540" y="50" width="160" height="30" rx="4" class="queue" />
+  <text x="620" y="70" class="label-title">media.uploaded</text>
+  <text x="475" y="68" class="arrow-rk">media.uploaded</text>
+  <line x1="460" y1="75" x2="540" y2="65" class="arrow" />
+
+  <rect x="540" y="90" width="160" height="30" rx="4" class="queue" />
+  <text x="620" y="110" class="label-title">q.notifications</text>
+  <text x="475" y="100" class="arrow-rk">maintenance.# media.processed</text>
+  <text x="475" y="112" class="arrow-rk">parts.* budget.* workorder.#</text>
+  <line x1="460" y1="105" x2="540" y2="105" class="arrow" />
+
+  <rect x="540" y="130" width="160" height="30" rx="4" class="queue" />
+  <text x="620" y="150" class="label-title">q.inventory</text>
+  <text x="475" y="148" class="arrow-rk">parts.requested</text>
+  <line x1="460" y1="145" x2="540" y2="145" class="arrow" />
+
+  <rect x="540" y="170" width="160" height="30" rx="4" class="queue" />
+  <text x="620" y="190" class="label-title">q.audit</text>
+  <text x="475" y="188" class="arrow-rk"># (todos eventos)</text>
+  <line x1="460" y1="185" x2="540" y2="185" class="arrow" />
+
+  <rect x="540" y="210" width="160" height="30" rx="4" class="queue" />
+  <text x="620" y="230" class="label-title">q.reports (futuro)</text>
+  <text x="475" y="228" class="arrow-rk">workorder.completed</text>
+  <line x1="460" y1="225" x2="540" y2="225" class="arrow" />
+
+  <!-- Fanout: cada server cria fila exclusive -->
+  <rect x="540" y="260" width="160" height="40" rx="4" class="queue" />
+  <text x="620" y="280" class="label-title">q.broadcast.&lt;node&gt;</text>
+  <text x="620" y="295" class="label-sub">exclusive/auto-delete</text>
+  <line x1="460" y1="285" x2="540" y2="280" class="arrow" />
+
+  <!-- Direct queues -->
+  <rect x="540" y="320" width="160" height="30" rx="4" class="queue" />
+  <text x="620" y="340" class="label-title">q.cmd.media</text>
+  <text x="475" y="338" class="arrow-rk">routing key = "media"</text>
+  <line x1="460" y1="335" x2="540" y2="335" class="arrow" />
+
+  <rect x="540" y="360" width="160" height="30" rx="4" class="queue" />
+  <text x="620" y="380" class="label-title">q.cmd.report</text>
+  <text x="475" y="378" class="arrow-rk">routing key = "report"</text>
+  <line x1="460" y1="375" x2="540" y2="375" class="arrow" />
+
+  <!-- Headers exchange queues -->
+  <rect x="540" y="400" width="160" height="30" rx="4" class="queue" />
+  <text x="620" y="420" class="label-title">q.notify.email</text>
+  <text x="475" y="418" class="arrow-rk">x-match=all channel=email</text>
+  <line x1="460" y1="415" x2="540" y2="415" class="arrow" />
+
+  <rect x="540" y="440" width="160" height="30" rx="4" class="queue" />
+  <text x="620" y="460" class="label-title">q.notify.sms</text>
+  <text x="475" y="458" class="arrow-rk">x-match=all channel=sms</text>
+  <line x1="460" y1="455" x2="540" y2="455" class="arrow" />
+
+  <rect x="540" y="480" width="160" height="30" rx="4" class="queue" />
+  <text x="620" y="500" class="label-title">q.notify.whatsapp</text>
+  <text x="475" y="498" class="arrow-rk">x-match=all channel=whatsapp</text>
+  <line x1="460" y1="495" x2="540" y2="495" class="arrow" />
+
+  <!-- DLX queues -->
+  <rect x="540" y="520" width="160" height="30" rx="4" class="queue" />
+  <text x="620" y="540" class="label-title">q.dlx.media</text>
+  <line x1="460" y1="365" x2="540" y2="535" class="arrow" stroke-dasharray="3 3" />
+
+  <!-- Workers -->
+  <rect x="760" y="50" width="200" height="40" rx="6" class="worker" />
+  <text x="860" y="68" class="label-title">media-worker</text>
+  <text x="860" y="82" class="label-sub">prefetch=1</text>
+
+  <rect x="760" y="98" width="200" height="40" rx="6" class="worker" />
+  <text x="860" y="116" class="label-title">notification-worker</text>
+  <text x="860" y="130" class="label-sub">N replicas, prefetch=5</text>
+
+  <rect x="760" y="146" width="200" height="40" rx="6" class="worker" />
+  <text x="860" y="164" class="label-title">inventory-worker</text>
+  <text x="860" y="178" class="label-sub">prefetch=1 (work queue)</text>
+
+  <rect x="760" y="194" width="200" height="40" rx="6" class="worker" />
+  <text x="860" y="212" class="label-title">audit-worker</text>
+  <text x="860" y="226" class="label-sub">prefetch=20</text>
+
+  <rect x="760" y="242" width="200" height="40" rx="6" class="worker" />
+  <text x="860" y="260" class="label-title">report-worker (futuro)</text>
+
+  <rect x="760" y="290" width="200" height="40" rx="6" class="worker" />
+  <text x="860" y="308" class="label-title">dashboard subscriber</text>
+
+  <rect x="760" y="338" width="200" height="40" rx="6" class="worker" />
+  <text x="860" y="356" class="label-title">media-batch-cmd</text>
+
+  <rect x="760" y="386" class="worker" width="200" height="40" rx="6" />
+  <text x="860" y="404" class="label-title">email-sender</text>
+
+  <rect x="760" y="434" class="worker" width="200" height="40" rx="6" />
+  <text x="860" y="452" class="label-title">sms-sender</text>
+
+  <rect x="760" y="482" class="worker" width="200" height="40" rx="6" />
+  <text x="860" y="500" class="label-title">whatsapp-sender</text>
+
+  <rect x="760" y="530" class="worker" width="200" height="40" rx="6" />
+  <text x="860" y="548" class="label-title">dlx-replay (manual)</text>
+
+  <!-- Queue -> Worker -->
+  <line x1="700" y1="65" x2="760" y2="70" class="arrow" />
+  <line x1="700" y1="105" x2="760" y2="118" class="arrow" />
+  <line x1="700" y1="145" x2="760" y2="166" class="arrow" />
+  <line x1="700" y1="185" x2="760" y2="214" class="arrow" />
+  <line x1="700" y1="225" x2="760" y2="262" class="arrow" />
+  <line x1="700" y1="285" x2="760" y2="310" class="arrow" />
+  <line x1="700" y1="335" x2="760" y2="358" class="arrow" />
+  <line x1="700" y1="375" x2="760" y2="358" class="arrow" />
+  <line x1="700" y1="415" x2="760" y2="406" class="arrow" />
+  <line x1="700" y1="455" x2="760" y2="454" class="arrow" />
+  <line x1="700" y1="495" x2="760" y2="502" class="arrow" />
+  <line x1="700" y1="535" x2="760" y2="550" class="arrow" />
+
+  <text x="500" y="610" class="label-sub" font-style="italic">5 exchanges (Topic, Fanout, Direct, Headers, DLX) + ~12 filas no protótipo + ~25 routing keys planejadas.</text>
+  <text x="500" y="630" class="label-sub" font-style="italic">No protótipo demonstramos os 4 padrões principais. Os demais ficam descritos como evolução.</text>
+  <text x="500" y="660" class="label-title" font-size="11">Padrões em uso: Pub/Sub, Topic Routing, Work Queue, Headers, DLX, Federation (planejada)</text>
+</svg>

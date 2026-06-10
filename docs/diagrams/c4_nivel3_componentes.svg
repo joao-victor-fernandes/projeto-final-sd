@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" font-family="Helvetica, Arial, sans-serif">
+  <style>
+    .container-box { fill: #e3f2fd; stroke: #1565c0; stroke-width: 2.5; stroke-dasharray: 6 4; }
+    .ctrl { fill: #c8e6c9; stroke: #2e7d32; stroke-width: 1.8; }
+    .svc { fill: #fff9c4; stroke: #f9a825; stroke-width: 1.8; }
+    .mid { fill: #ffccbc; stroke: #d84315; stroke-width: 1.8; }
+    .repo { fill: #d1c4e9; stroke: #4527a0; stroke-width: 1.8; }
+    .ext { fill: #cfd8dc; stroke: #455a64; stroke-width: 1.5; stroke-dasharray: 4 3; }
+    .label-zone { font-weight: bold; font-size: 14px; fill: #1565c0; }
+    .label-title { font-weight: bold; font-size: 11px; text-anchor: middle; }
+    .label-sub { font-size: 9px; text-anchor: middle; fill: #555; }
+    .arrow { stroke: #2c3e50; stroke-width: 1.2; fill: none; marker-end: url(#arrow); }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2c3e50" />
+    </marker>
+  </defs>
+
+  <text x="450" y="30" class="label-title" font-size="18">C4 Nível 3 — Componentes do Backend API</text>
+
+  <rect x="40" y="60" width="820" height="510" rx="10" class="container-box" />
+  <text x="60" y="85" class="label-zone">Backend API (Express, Node.js)</text>
+
+  <!-- Controllers -->
+  <text x="200" y="110" class="label-title" font-size="13" fill="#2e7d32">Controllers</text>
+  <rect x="80" y="120" width="240" height="35" rx="4" class="ctrl" />
+  <text x="200" y="142" class="label-title">AuthController</text>
+  <rect x="80" y="160" width="240" height="35" rx="4" class="ctrl" />
+  <text x="200" y="182" class="label-title">WorkOrderController</text>
+  <rect x="80" y="200" width="240" height="35" rx="4" class="ctrl" />
+  <text x="200" y="222" class="label-title">MaintenanceStepController</text>
+  <rect x="80" y="240" width="240" height="35" rx="4" class="ctrl" />
+  <text x="200" y="262" class="label-title">MediaController</text>
+  <rect x="80" y="280" width="240" height="35" rx="4" class="ctrl" />
+  <text x="200" y="302" class="label-title">PartController</text>
+  <rect x="80" y="320" width="240" height="35" rx="4" class="ctrl" />
+  <text x="200" y="342" class="label-title">NotificationController</text>
+  <rect x="80" y="360" width="240" height="35" rx="4" class="ctrl" />
+  <text x="200" y="382" class="label-title">BudgetController</text>
+
+  <!-- Services -->
+  <text x="450" y="110" class="label-title" font-size="13" fill="#f9a825">Services</text>
+  <rect x="345" y="120" width="220" height="40" rx="4" class="svc" />
+  <text x="455" y="143" class="label-title">SessionService</text>
+  <text x="455" y="155" class="label-sub">tokens em memória</text>
+
+  <rect x="345" y="170" width="220" height="40" rx="4" class="svc" />
+  <text x="455" y="193" class="label-title">StepStateMachine</text>
+  <text x="455" y="205" class="label-sub">canTransition, nextSteps</text>
+
+  <rect x="345" y="220" width="220" height="40" rx="4" class="svc" />
+  <text x="455" y="243" class="label-title">PartService</text>
+  <text x="455" y="255" class="label-sub">request / reserve / install</text>
+
+  <rect x="345" y="270" width="220" height="60" rx="6" class="mid" />
+  <text x="455" y="295" class="label-title">EventPublisher</text>
+  <text x="455" y="312" class="label-sub">publishEvent(routingKey, payload)</text>
+  <text x="455" y="324" class="label-sub">broadcast, sendCommand, notify</text>
+
+  <rect x="345" y="340" width="220" height="40" rx="4" class="svc" />
+  <text x="455" y="365" class="label-title">RoleGuard</text>
+  <text x="455" y="375" class="label-sub">requireAuth / requireAnyRole</text>
+
+  <!-- Repositories -->
+  <text x="700" y="110" class="label-title" font-size="13" fill="#4527a0">Repositories</text>
+  <rect x="590" y="120" width="240" height="35" rx="4" class="repo" />
+  <text x="710" y="142" class="label-title">UserRepository</text>
+  <rect x="590" y="160" width="240" height="35" rx="4" class="repo" />
+  <text x="710" y="182" class="label-title">WorkOrderRepository</text>
+  <rect x="590" y="200" width="240" height="35" rx="4" class="repo" />
+  <text x="710" y="222" class="label-title">MediaRepository</text>
+  <rect x="590" y="240" width="240" height="35" rx="4" class="repo" />
+  <text x="710" y="262" class="label-title">PartRepository</text>
+  <rect x="590" y="280" width="240" height="35" rx="4" class="repo" />
+  <text x="710" y="302" class="label-title">NotificationRepository</text>
+  <rect x="590" y="320" width="240" height="35" rx="4" class="repo" />
+  <text x="710" y="342" class="label-title">StepHistoryRepository</text>
+  <rect x="590" y="360" width="240" height="35" rx="4" class="repo" />
+  <text x="710" y="382" class="label-title">AuditRepository</text>
+
+  <!-- Externos -->
+  <rect x="80" y="450" width="240" height="50" rx="6" class="ext" />
+  <text x="200" y="475" class="label-title">PostgreSQL</text>
+  <text x="200" y="490" class="label-sub">pg.Pool</text>
+
+  <rect x="345" y="450" width="220" height="50" rx="6" class="ext" />
+  <text x="455" y="475" class="label-title">RabbitMQ Broker</text>
+  <text x="455" y="490" class="label-sub">amqplib</text>
+
+  <rect x="590" y="450" width="240" height="50" rx="6" class="ext" />
+  <text x="710" y="475" class="label-title">Disco / Storage</text>
+  <text x="710" y="490" class="label-sub">multer + uploads/</text>
+
+  <!-- Setas Controllers -> Services -->
+  <line x1="320" y1="137" x2="345" y2="137" class="arrow" />
+  <line x1="320" y1="217" x2="345" y2="190" class="arrow" />
+  <line x1="320" y1="297" x2="345" y2="240" class="arrow" />
+  <line x1="320" y1="337" x2="345" y2="300" class="arrow" />
+
+  <!-- Setas Services -> Repos -->
+  <line x1="565" y1="190" x2="590" y2="175" class="arrow" />
+  <line x1="565" y1="240" x2="590" y2="220" class="arrow" />
+  <line x1="565" y1="360" x2="590" y2="340" class="arrow" />
+
+  <!-- EventPublisher -> RabbitMQ -->
+  <line x1="455" y1="330" x2="455" y2="450" class="arrow" stroke="#d84315" stroke-width="1.8" />
+
+  <!-- Repos -> Postgres -->
+  <line x1="710" y1="395" x2="320" y2="450" class="arrow" />
+
+  <text x="450" y="535" class="label-sub">EventPublisher é o ponto único de saída do backend para o broker.</text>
+  <text x="450" y="550" class="label-sub">Trocar o middleware no futuro afeta apenas esta classe.</text>
+</svg>

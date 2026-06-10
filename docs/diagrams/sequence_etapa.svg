@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" font-family="Helvetica, Arial, sans-serif">
+  <style>
+    .head { fill: #fff3cd; stroke: #856404; stroke-width: 2; }
+    .head-sys { fill: #e3f2fd; stroke: #1565c0; stroke-width: 2; }
+    .label { font-weight: bold; font-size: 11px; text-anchor: middle; }
+    .lifeline { stroke: #999; stroke-width: 1; stroke-dasharray: 3 3; }
+    .msg { stroke: #2c3e50; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+    .msg-async { stroke: #d84315; stroke-width: 1.5; fill: none; marker-end: url(#arrow-async); stroke-dasharray: 4 3; }
+    .arrow-label { font-size: 9px; fill: #2c3e50; }
+    .activation { fill: #fff9c4; stroke: #f9a825; stroke-width: 1; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2c3e50" />
+    </marker>
+    <marker id="arrow-async" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#d84315" />
+    </marker>
+  </defs>
+
+  <text x="500" y="25" class="label" font-size="15">Sequence Diagram — Mudança de etapa e cascata de notificações</text>
+
+  <!-- Heads -->
+  <rect x="20" y="50" width="110" height="35" rx="4" class="head" />
+  <text x="75" y="73" class="label">Mecânico</text>
+  <line x1="75" y1="85" x2="75" y2="650" class="lifeline" />
+
+  <rect x="150" y="50" width="110" height="35" rx="4" class="head-sys" />
+  <text x="205" y="73" class="label">Backend API</text>
+  <line x1="205" y1="85" x2="205" y2="650" class="lifeline" />
+
+  <rect x="280" y="50" width="110" height="35" rx="4" class="head-sys" />
+  <text x="335" y="73" class="label">PostgreSQL</text>
+  <line x1="335" y1="85" x2="335" y2="650" class="lifeline" />
+
+  <rect x="410" y="50" width="110" height="35" rx="4" class="head-sys" />
+  <text x="465" y="73" class="label">RabbitMQ Topic</text>
+  <line x1="465" y1="85" x2="465" y2="650" class="lifeline" />
+
+  <rect x="540" y="50" width="110" height="35" rx="4" class="head-sys" />
+  <text x="595" y="73" class="label">notif-worker</text>
+  <line x1="595" y1="85" x2="595" y2="650" class="lifeline" />
+
+  <rect x="670" y="50" width="110" height="35" rx="4" class="head-sys" />
+  <text x="725" y="73" class="label">audit-worker</text>
+  <line x1="725" y1="85" x2="725" y2="650" class="lifeline" />
+
+  <rect x="800" y="50" width="110" height="35" rx="4" class="head-sys" />
+  <text x="855" y="73" class="label">inventory-worker</text>
+  <line x1="855" y1="85" x2="855" y2="650" class="lifeline" />
+
+  <rect x="920" y="50" width="60" height="35" rx="4" class="head" />
+  <text x="950" y="73" class="label">Cliente</text>
+  <line x1="950" y1="85" x2="950" y2="650" class="lifeline" />
+
+  <!-- Mensagens -->
+  <line x1="75" y1="105" x2="205" y2="105" class="msg" />
+  <text x="100" y="100" class="arrow-label">POST /api/work-orders/:id/step {EM_REPARO}</text>
+
+  <rect x="200" y="105" width="10" height="180" class="activation" />
+
+  <line x1="205" y1="135" x2="205" y2="155" class="msg" />
+  <text x="215" y="148" class="arrow-label">canTransition()</text>
+
+  <line x1="205" y1="170" x2="335" y2="170" class="msg" />
+  <text x="220" y="165" class="arrow-label">UPDATE work_orders SET step=...</text>
+  <line x1="205" y1="190" x2="335" y2="190" class="msg" />
+  <text x="220" y="185" class="arrow-label">INSERT step_history</text>
+
+  <line x1="205" y1="220" x2="465" y2="220" class="msg-async" />
+  <text x="220" y="215" class="arrow-label">publish (key=maintenance.step.updated)</text>
+
+  <line x1="205" y1="255" x2="75" y2="255" class="msg" />
+  <text x="100" y="250" class="arrow-label">200 OK</text>
+
+  <!-- Broker fanout para múltiplos consumers -->
+  <line x1="465" y1="285" x2="595" y2="285" class="msg-async" />
+  <text x="475" y="280" class="arrow-label">deliver (q.notifications)</text>
+
+  <line x1="465" y1="310" x2="725" y2="310" class="msg-async" />
+  <text x="475" y="305" class="arrow-label">deliver (q.audit, pattern=#)</text>
+
+  <line x1="465" y1="335" x2="855" y2="335" class="msg-async" />
+  <text x="475" y="330" class="arrow-label">não bind para esta key</text>
+
+  <rect x="590" y="285" width="10" height="120" class="activation" />
+  <rect x="720" y="310" width="10" height="120" class="activation" />
+
+  <!-- Audit worker grava -->
+  <line x1="725" y1="370" x2="335" y2="370" class="msg" />
+  <text x="450" y="365" class="arrow-label">INSERT audit_events</text>
+
+  <!-- Notif worker: descobre stakeholders -->
+  <line x1="595" y1="395" x2="205" y2="395" class="msg" />
+  <text x="280" y="390" class="arrow-label">GET /internal/work-orders/:id/stakeholders</text>
+
+  <line x1="205" y1="420" x2="335" y2="420" class="msg" />
+  <text x="220" y="415" class="arrow-label">SELECT customer + mechanics</text>
+
+  <line x1="205" y1="445" x2="595" y2="445" class="msg" />
+  <text x="290" y="440" class="arrow-label">{customer, mechanics}</text>
+
+  <line x1="595" y1="475" x2="205" y2="475" class="msg" />
+  <text x="280" y="470" class="arrow-label">POST /internal/notifications</text>
+
+  <line x1="205" y1="500" x2="335" y2="500" class="msg" />
+  <text x="220" y="495" class="arrow-label">INSERT notifications</text>
+
+  <!-- Cliente atualiza painel e vê -->
+  <line x1="950" y1="555" x2="205" y2="555" class="msg" />
+  <text x="500" y="550" class="arrow-label">GET /api/portal (refresh)</text>
+
+  <line x1="205" y1="585" x2="950" y2="585" class="msg" />
+  <text x="500" y="580" class="arrow-label">{ workOrders, notifications, ... }</text>
+
+  <text x="500" y="630" class="arrow-label" font-style="italic">Uma única chamada do mecânico dispara processamento paralelo em vários workers.</text>
+</svg>
