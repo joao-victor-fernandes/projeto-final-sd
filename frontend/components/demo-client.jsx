@@ -6,12 +6,18 @@ const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
 
 const demoAccounts = [
-  { role: "MECANICO",      name: "Maria Souza", email: "maria@oficina.demo", password: "mecanico123",
-    notes: "Avança etapas, revisa orçamentos, envia evidências." },
-  { role: "ADMINISTRADOR", name: "Ana Martins", email: "ana@oficina.demo",   password: "admin123",
-    notes: "Acesso total ao sistema." },
-  { role: "CLIENTE",       name: "Joao Silva",  email: "joao@oficina.demo",  password: "cliente123",
-    notes: "Acompanha a própria ordem e aprova orçamentos." },
+  {
+    role: "MECANICO", name: "Maria Souza", email: "maria@oficina.demo", password: "mecanico123",
+    notes: "Avança etapas, revisa orçamentos, envia evidências."
+  },
+  {
+    role: "ADMINISTRADOR", name: "Ana Martins", email: "ana@oficina.demo", password: "admin123",
+    notes: "Acesso total ao sistema."
+  },
+  {
+    role: "CLIENTE", name: "Joao Silva", email: "joao@oficina.demo", password: "cliente123",
+    notes: "Acompanha a própria ordem e aprova orçamentos."
+  },
 ];
 
 const TERMINAL_STEPS = new Set(["ENTREGUE", "CANCELADO"]);
@@ -35,71 +41,71 @@ function statusLabel(s) {
 
 function stepLabel(s) {
   return ({
-    RECEBIDO:            "Recebido",
-    RELATO_REGISTRADO:   "Relato registrado",
-    EM_DIAGNOSTICO:      "Em diagnóstico",
-    CAUSA_IDENTIFICADA:  "Causa identificada",
-    ORCAMENTO_ENVIADO:   "Orçamento enviado",
-    ORCAMENTO_APROVADO:  "Orçamento aprovado",
+    RECEBIDO: "Recebido",
+    RELATO_REGISTRADO: "Relato registrado",
+    EM_DIAGNOSTICO: "Em diagnóstico",
+    CAUSA_IDENTIFICADA: "Causa identificada",
+    ORCAMENTO_ENVIADO: "Orçamento enviado",
+    ORCAMENTO_APROVADO: "Orçamento aprovado",
     ORCAMENTO_REPROVADO: "Orçamento reprovado",
-    PECAS_SOLICITADAS:   "Peças solicitadas",
-    EM_REPARO:           "Em reparo",
-    REVISAO_ORCAMENTO:   "Revisão de orçamento",
-    TESTE_FINAL:         "Teste final",
-    CONCLUIDO:           "Concluído",
-    ENTREGUE:            "Entregue",
-    CANCELADO:           "Cancelado",
+    PECAS_SOLICITADAS: "Peças solicitadas",
+    EM_REPARO: "Em reparo",
+    REVISAO_ORCAMENTO: "Revisão de orçamento",
+    TESTE_FINAL: "Teste final",
+    CONCLUIDO: "Concluído",
+    ENTREGUE: "Entregue",
+    CANCELADO: "Cancelado",
   })[s] || s;
 }
 
 function stepColor(s) {
-  if (s === "CANCELADO")                                      return "#b91c1c";
-  if (s === "ENTREGUE" || s === "CONCLUIDO")                  return "#15803d";
-  if (s === "ORCAMENTO_REPROVADO")                            return "#b45309";
-  if (s === "ORCAMENTO_APROVADO")                             return "#15803d";
+  if (s === "CANCELADO") return "#b91c1c";
+  if (s === "ENTREGUE" || s === "CONCLUIDO") return "#15803d";
+  if (s === "ORCAMENTO_REPROVADO") return "#b45309";
+  if (s === "ORCAMENTO_APROVADO") return "#15803d";
   if (s === "ORCAMENTO_ENVIADO" || s === "REVISAO_ORCAMENTO") return "#1d4ed8";
   return "#475569";
 }
 
 function auditTitle(ev) {
   const rk = ev.routingKey;
-  const p  = ev.payload || {};
+  const p = ev.payload || {};
   const by = p.changedByName || "";
-  const wo = p.workOrderId   ? ` — ${p.workOrderId}` : "";
+  const wo = p.workOrderId ? ` — ${p.workOrderId}` : "";
 
   if (rk === "maintenance.step.updated") {
     const from = stepLabel(p.fromStep || "—");
-    const to   = stepLabel(p.toStep   || "—");
+    const to = stepLabel(p.toStep || "—");
     return `${by ? by + " alterou" : "Etapa alterada"}: ${from} → ${to}${wo}`;
   }
-  if (rk === "budget.created")      return `Orçamento enviado ao cliente${wo}`;
-  if (rk === "budget.updated")      return `Revisão de orçamento adicionada${wo}`;
-  if (rk === "budget.approved")     return `Orçamento aprovado${wo}`;
-  if (rk === "budget.rejected")     return `Orçamento recusado${wo}`;
-  if (rk === "parts.requested")     return `Peça solicitada${wo}`;
-  if (rk === "parts.reserved")      return `Peça reservada pelo inventory-worker${wo}`;
-  if (rk === "parts.outofstock")    return `Sem estoque — inventory-worker${wo}`;
-  if (rk === "parts.installed")     return `Peça instalada${wo}`;
-  if (rk === "media.uploaded")      return `Mídia enviada: ${p.fileCount ?? "?"} arquivo(s)${wo}`;
-  if (rk === "media.processed")     return `Mídia processada pelo media-worker: ${p.fileName || p.mediaId || "—"}${wo}`;
+  if (rk === "budget.created") return `Orçamento enviado ao cliente${wo}`;
+  if (rk === "budget.updated") return `Revisão de orçamento adicionada${wo}`;
+  if (rk === "budget.approved") return `Orçamento aprovado${wo}`;
+  if (rk === "budget.rejected") return `Orçamento recusado${wo}`;
+  if (rk === "parts.requested") return `Peça solicitada${wo}`;
+  if (rk === "parts.reserved") return `Peça reservada pelo inventory-worker${wo}`;
+  if (rk === "parts.outofstock") return `Sem estoque — inventory-worker${wo}`;
+  if (rk === "parts.installed") return `Peça instalada${wo}`;
+  if (rk === "media.uploaded") return `Mídia enviada: ${p.fileCount ?? "?"} arquivo(s)${wo}`;
+  if (rk === "media.processed") return `Mídia processada pelo media-worker: ${p.fileName || p.mediaId || "—"}${wo}`;
   if (rk === "workorder.completed") return `Serviço concluído${wo}`;
   return rk + wo;
 }
 
 function auditSummary(ev) {
   const rk = ev.routingKey;
-  const p  = ev.payload || {};
+  const p = ev.payload || {};
   if (rk === "maintenance.step.updated") return `${p.fromStep || "—"} → ${p.toStep || "—"} (${p.changedByName || "sistema"})`;
-  if (rk === "budget.created")   return `Orçamento: peças R$${p.parts ?? 0} + m.o. R$${p.labor ?? 0}`;
-  if (rk === "budget.updated")   return "Revisão de orçamento adicionada";
-  if (rk === "budget.approved")  return "Orçamento aprovado";
-  if (rk === "budget.rejected")  return "Orçamento recusado";
-  if (rk === "parts.requested")  return `Solicitação: ${p.requestId || "—"}`;
-  if (rk === "parts.reserved")   return `Peça reservada: ${p.requestId || "—"}`;
+  if (rk === "budget.created") return `Orçamento: peças R$${p.parts ?? 0} + m.o. R$${p.labor ?? 0}`;
+  if (rk === "budget.updated") return "Revisão de orçamento adicionada";
+  if (rk === "budget.approved") return "Orçamento aprovado";
+  if (rk === "budget.rejected") return "Orçamento recusado";
+  if (rk === "parts.requested") return `Solicitação: ${p.requestId || "—"}`;
+  if (rk === "parts.reserved") return `Peça reservada: ${p.requestId || "—"}`;
   if (rk === "parts.outofstock") return `Sem estoque: ${p.requestId || "—"}`;
-  if (rk === "parts.installed")  return `Peça instalada: ${p.requestId || "—"}`;
-  if (rk === "media.uploaded")   return `Upload: ${p.fileCount ?? "?"} arquivo(s)`;
-  if (rk === "media.processed")  return `Mídia processada: ${p.fileName || p.mediaId || "—"}`;
+  if (rk === "parts.installed") return `Peça instalada: ${p.requestId || "—"}`;
+  if (rk === "media.uploaded") return `Upload: ${p.fileCount ?? "?"} arquivo(s)`;
+  if (rk === "media.processed") return `Mídia processada: ${p.fileName || p.mediaId || "—"}`;
   if (rk === "workorder.completed") return "Serviço concluído";
   return JSON.stringify(p).slice(0, 80);
 }
@@ -107,25 +113,25 @@ function auditSummary(ev) {
 function getTabsForRole(role) {
   if (role === "CLIENTE") {
     return [
-      { id: "orders",        label: "Ordens" },
-      { id: "timeline",      label: "Linha do Tempo" },
+      { id: "orders", label: "Ordens" },
+      { id: "timeline", label: "Linha do Tempo" },
       { id: "notifications", label: "Notificações" },
     ];
   }
   if (role === "ADMINISTRADOR") {
     return [
-      { id: "orders",        label: "Ordens" },
-      { id: "timeline",      label: "Linha do Tempo" },
+      { id: "orders", label: "Ordens" },
+      { id: "timeline", label: "Linha do Tempo" },
       { id: "notifications", label: "Notificações" },
       { id: "registrations", label: "Cadastros" },
-      { id: "stock",         label: "Estoque" },
-      { id: "audit",         label: "Auditoria" },
+      { id: "stock", label: "Estoque" },
+      { id: "audit", label: "Auditoria" },
     ];
   }
   // MECANICO
   return [
-    { id: "orders",        label: "Ordens" },
-    { id: "timeline",      label: "Linha do Tempo" },
+    { id: "orders", label: "Ordens" },
+    { id: "timeline", label: "Linha do Tempo" },
     { id: "notifications", label: "Notificações" },
     { id: "registrations", label: "Cadastros" },
   ];
@@ -136,30 +142,30 @@ const EMPTY_REVISION_FORM = { description: "", priceCents: "", catalogPartId: ""
 const EMPTY_BUDGET_ITEM_FORM = { description: "", priceCents: "", catalogPartId: "" };
 
 export function DemoClient({ debugMode = false }) {
-  const [token,           setToken]           = useState("");
-  const [session,         setSession]         = useState(null);
-  const [data,            setData]            = useState(null);
-  const [customers,       setCustomers]       = useState([]);
-  const [mechanics,       setMechanics]       = useState([]);
-  const [allVehicles,     setAllVehicles]     = useState([]);
-  const [catalogParts,    setCatalogParts]    = useState([]);
-  const [stepsMeta,       setStepsMeta]       = useState({ transitions: {} });
+  const [token, setToken] = useState("");
+  const [session, setSession] = useState(null);
+  const [data, setData] = useState(null);
+  const [customers, setCustomers] = useState([]);
+  const [mechanics, setMechanics] = useState([]);
+  const [allVehicles, setAllVehicles] = useState([]);
+  const [catalogParts, setCatalogParts] = useState([]);
+  const [stepsMeta, setStepsMeta] = useState({ transitions: {} });
   const [selectedOrderId, setSelectedOrderId] = useState("");
-  const [message,         setMessage]         = useState("");
-  const [activeTab,       setActiveTab]       = useState("orders");
-  const [cancelConfirm,   setCancelConfirm]   = useState(false);
-  const [resetConfirm,    setResetConfirm]    = useState(false);
-  const [stockData,       setStockData]       = useState(null);
-  const [auditData,       setAuditData]       = useState(null);
+  const [message, setMessage] = useState("");
+  const [activeTab, setActiveTab] = useState("orders");
+  const [cancelConfirm, setCancelConfirm] = useState(false);
+  const [resetConfirm, setResetConfirm] = useState(false);
+  const [stockData, setStockData] = useState(null);
+  const [auditData, setAuditData] = useState(null);
   const [expandedAuditId, setExpandedAuditId] = useState(null);
-  const [commentText,     setCommentText]     = useState("");
+  const [commentText, setCommentText] = useState("");
 
-  const [loginForm,      setLoginForm]      = useState({ email: demoAccounts[0].email, password: demoAccounts[0].password });
-  const [customerForm,   setCustomerForm]   = useState({ name: "", email: "", password: "" });
-  const [vehicleForm,    setVehicleForm]    = useState({ ownerId: "", plate: "", model: "" });
-  const [workOrderForm,  setWorkOrderForm]  = useState(EMPTY_WO_FORM);
-  const [budgetForm,     setBudgetForm]     = useState({ labor: "", notes: "" });
-  const [revisionForm,   setRevisionForm]   = useState(EMPTY_REVISION_FORM);
+  const [loginForm, setLoginForm] = useState({ email: demoAccounts[0].email, password: demoAccounts[0].password });
+  const [customerForm, setCustomerForm] = useState({ name: "", email: "", password: "" });
+  const [vehicleForm, setVehicleForm] = useState({ ownerId: "", plate: "", model: "" });
+  const [workOrderForm, setWorkOrderForm] = useState(EMPTY_WO_FORM);
+  const [budgetForm, setBudgetForm] = useState({ labor: "", notes: "" });
+  const [revisionForm, setRevisionForm] = useState(EMPTY_REVISION_FORM);
   const [budgetItemForm, setBudgetItemForm] = useState(EMPTY_BUDGET_ITEM_FORM);
 
   const [, startTransition] = useTransition();
@@ -212,14 +218,14 @@ export function DemoClient({ debugMode = false }) {
 
   async function loadOperatorData(t = token) {
     const [custR, mechR, vehR, partsR] = await Promise.all([
-      fetch(`${API_BASE_URL}/api/customers`,  { headers: getHeaders(t) }),
-      fetch(`${API_BASE_URL}/api/mechanics`,  { headers: getHeaders(t) }),
-      fetch(`${API_BASE_URL}/api/vehicles`,   { headers: getHeaders(t) }),
-      fetch(`${API_BASE_URL}/api/parts`,      { headers: getHeaders(t) }),
+      fetch(`${API_BASE_URL}/api/customers`, { headers: getHeaders(t) }),
+      fetch(`${API_BASE_URL}/api/mechanics`, { headers: getHeaders(t) }),
+      fetch(`${API_BASE_URL}/api/vehicles`, { headers: getHeaders(t) }),
+      fetch(`${API_BASE_URL}/api/parts`, { headers: getHeaders(t) }),
     ]);
-    if (custR.ok)  { const list = await custR.json();  setCustomers(list); setVehicleForm((cv) => ({ ...cv, ownerId: cv.ownerId || list[0]?.id || "" })); }
-    if (mechR.ok)  { setMechanics(await mechR.json()); }
-    if (vehR.ok)   { setAllVehicles(await vehR.json()); }
+    if (custR.ok) { const list = await custR.json(); setCustomers(list); setVehicleForm((cv) => ({ ...cv, ownerId: cv.ownerId || list[0]?.id || "" })); }
+    if (mechR.ok) { setMechanics(await mechR.json()); }
+    if (vehR.ok) { setAllVehicles(await vehR.json()); }
     if (partsR.ok) { setCatalogParts(await partsR.json()); }
   }
 
@@ -238,7 +244,7 @@ export function DemoClient({ debugMode = false }) {
   }
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/meta/steps`).then((r) => r.json()).then(setStepsMeta).catch(() => {});
+    fetch(`${API_BASE_URL}/api/meta/steps`).then((r) => r.json()).then(setStepsMeta).catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -251,12 +257,12 @@ export function DemoClient({ debugMode = false }) {
   useEffect(() => {
     if (!token || !session) return;
     if (["MECANICO", "ADMINISTRADOR"].includes(session.role)) {
-      loadOperatorData(token).catch(() => {});
+      loadOperatorData(token).catch(() => { });
     } else {
-      loadCatalogParts(token).catch(() => {});
+      loadCatalogParts(token).catch(() => { });
     }
     if (session.role === "ADMINISTRADOR") {
-      loadManagerData(token).catch(() => {});
+      loadManagerData(token).catch(() => { });
     }
   }, [token, session?.id]);
 
@@ -279,7 +285,7 @@ export function DemoClient({ debugMode = false }) {
             totals: { ...prev.totals, unreadNotifications: notifications.filter((n) => !n.read).length },
           } : prev);
         }
-      } catch (_) {}
+      } catch (_) { }
     }, 5000);
     return () => clearInterval(id);
   }, [token]);
@@ -307,7 +313,7 @@ export function DemoClient({ debugMode = false }) {
   }
 
   async function handleLogout() {
-    if (token) await fetch(`${API_BASE_URL}/api/auth/logout`, { method: "POST", headers: getHeaders() }).catch(() => {});
+    if (token) await fetch(`${API_BASE_URL}/api/auth/logout`, { method: "POST", headers: getHeaders() }).catch(() => { });
     window.localStorage.removeItem("demo-token");
     setToken(""); setSession(null); setData(null); setSelectedOrderId("");
     setActiveTab("orders"); setMessage("Sessão encerrada.");
@@ -502,6 +508,16 @@ export function DemoClient({ debugMode = false }) {
 
   async function registerVehicle(e) {
     e.preventDefault();
+
+    const cleanPlate = vehicleForm.plate.toUpperCase().replace(/[- ]/g, "");
+
+    const BRAZILIAN_PLATE_REGEX = /^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/;
+
+    if (!BRAZILIAN_PLATE_REGEX.test(cleanPlate)) {
+      setMessage("Erro: A placa digitada não é válida no padrão brasileiro (Tradicional ou Mercosul).");
+      return;
+    }
+
     setMessage("Registrando veículo...");
     try {
       const r = await fetch(`${API_BASE_URL}/api/vehicles`, {
@@ -623,28 +639,28 @@ export function DemoClient({ debugMode = false }) {
   // ── Role flags ────────────────────────────────────────────────────────────────
   const isOperator = ["MECANICO", "ADMINISTRADOR"].includes(session.role);
   const isMechanic = session.role === "MECANICO";
-  const isClient   = session.role === "CLIENTE";
+  const isClient = session.role === "CLIENTE";
   const isTerminal = currentOrder ? TERMINAL_STEPS.has(currentOrder.step) : false;
-  const tabs       = getTabsForRole(session.role);
-  const unread     = data?.totals?.unreadNotifications ?? 0;
+  const tabs = getTabsForRole(session.role);
+  const unread = data?.totals?.unreadNotifications ?? 0;
 
   // Botões de avanço de step para o operador — exclui CANCELADO, destinos client-only,
   // REVISAO_ORCAMENTO (gerenciado pelo formulário de revisão), EM_REPARO quando vindo de REVISAO,
   // e ORCAMENTO_ENVIADO quando em CAUSA_IDENTIFICADA (substituído pelo formulário de orçamento)
   const advanceSteps = validNextSteps.filter(
     (s) => s !== "CANCELADO" &&
-           s !== "REVISAO_ORCAMENTO" &&
-           !CLIENT_ONLY_TARGETS.has(s) &&
-           !(currentOrder?.step === "REVISAO_ORCAMENTO" && s === "EM_REPARO") &&
-           !(currentOrder?.step === "CAUSA_IDENTIFICADA" && s === "ORCAMENTO_ENVIADO")
+      s !== "REVISAO_ORCAMENTO" &&
+      !CLIENT_ONLY_TARGETS.has(s) &&
+      !(currentOrder?.step === "REVISAO_ORCAMENTO" && s === "EM_REPARO") &&
+      !(currentOrder?.step === "CAUSA_IDENTIFICADA" && s === "ORCAMENTO_ENVIADO")
   );
 
-  const canClientDecide   = isClient && currentOrder?.step === "ORCAMENTO_ENVIADO";
+  const canClientDecide = isClient && currentOrder?.step === "ORCAMENTO_ENVIADO";
   const canClientRevision = isClient && currentOrder?.step === "REVISAO_ORCAMENTO";
   // canSendBudget: CAUSA_IDENTIFICADA = primeiro envio; ORCAMENTO_REPROVADO = reenvio
-  const canSendBudget     = isOperator && ["CAUSA_IDENTIFICADA", "ORCAMENTO_REPROVADO"].includes(currentOrder?.step);
-  const canRevise         = isOperator && currentOrder && REVISION_ELIGIBLE.has(currentOrder.step);
-  const canCancel         = isOperator && currentOrder && !isTerminal;
+  const canSendBudget = isOperator && ["CAUSA_IDENTIFICADA", "ORCAMENTO_REPROVADO"].includes(currentOrder?.step);
+  const canRevise = isOperator && currentOrder && REVISION_ELIGIBLE.has(currentOrder.step);
+  const canCancel = isOperator && currentOrder && !isTerminal;
 
   // ── Painel de revisão de orçamento (mecânico) ─────────────────────────────────
   function renderRevisionPanel() {
@@ -1346,8 +1362,20 @@ export function DemoClient({ debugMode = false }) {
                 </label>
                 <label>
                   <div className="label">Placa</div>
-                  <input className="text-input" value={vehicleForm.plate}
-                    onChange={(e) => setVehicleForm({ ...vehicleForm, plate: e.target.value })} />
+                  <input
+                    className="text-input"
+                    type="text"
+                    placeholder="Ex: ABC1234 ou ABC1D23"
+                    maxLength={7} 
+                    value={vehicleForm.plate}
+                    onChange={(e) => {
+                      const treatedValue = e.target.value
+                        .toUpperCase()
+                        .replace(/[^A-Z0-9]/g, "");
+
+                      setVehicleForm({ ...vehicleForm, plate: treatedValue });
+                    }}
+                  />
                 </label>
                 <label>
                   <div className="label">Modelo</div>
@@ -1418,8 +1446,8 @@ export function DemoClient({ debugMode = false }) {
                     {stockData.partRequests.map((r) => {
                       const badgeClass =
                         r.status === "RESERVED" || r.status === "INSTALLED" ? "PROCESSED"
-                        : r.status === "OUT_OF_STOCK" ? "FAILED"
-                        : "UPLOADED";
+                          : r.status === "OUT_OF_STOCK" ? "FAILED"
+                            : "UPLOADED";
                       return (
                         <tr key={r.id}>
                           <td><code>{r.workOrderId}</code></td>
