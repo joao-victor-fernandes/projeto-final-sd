@@ -23,7 +23,7 @@ jobs:
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         env:
-          NEXT_PUBLIC_API_BASE_URL: http://20.57.152.138
+          NEXT_PUBLIC_API_BASE_URL: https://oficina-mecanica.westus2.cloudapp.azure.com
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_POND_026F8941E }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
