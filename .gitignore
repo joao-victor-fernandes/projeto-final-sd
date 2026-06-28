@@ -6,3 +6,5 @@ backend/uploads/*
 !backend/uploads/.gitkeep
 backend/data/*.local.json
 frontend/.next
+.env
+

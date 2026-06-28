@@ -28,7 +28,7 @@
 
   <rect x="50" y="105" width="120" height="50" rx="4" class="net" />
   <text x="110" y="125" class="label-title">CDN</text>
-  <text x="110" y="140" class="label-sub">Cloudflare</text>
+  <text x="110" y="140" class="label-sub">Azure edge / CDN</text>
 
   <rect x="200" y="105" width="120" height="50" rx="4" class="net" />
   <text x="260" y="125" class="label-title">Load Balancer</text>
@@ -55,7 +55,7 @@
   <!-- Postgres -->
   <rect x="600" y="105" width="120" height="115" rx="4" class="pod" />
   <text x="660" y="125" class="label-title">PostgreSQL</text>
-  <text x="660" y="140" class="label-sub">Cluster RDS</text>
+  <text x="660" y="140" class="label-sub">Managed database</text>
   <text x="660" y="160" class="label-sub">primary + replica</text>
   <text x="660" y="180" class="label-sub">backup diário</text>
 
@@ -93,7 +93,7 @@
   <text x="760" y="275" class="label-sub">pods (futuro)</text>
 
   <rect x="830" y="240" width="130" height="50" rx="4" class="pod" />
-  <text x="895" y="260" class="label-title">Storage S3/R2</text>
+  <text x="895" y="260" class="label-title">Azure Blob Storage</text>
   <text x="895" y="275" class="label-sub">vídeos definitivos</text>
 
   <text x="500" y="320" class="label-sub" fill="#1565c0">Kubernetes (3+ nós), HPA por worker. Observabilidade: Prometheus + Grafana + Loki.</text>

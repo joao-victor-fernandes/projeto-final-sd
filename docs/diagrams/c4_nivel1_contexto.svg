@@ -62,7 +62,7 @@
   </g>
   <g>
     <rect x="700" y="150" width="160" height="50" rx="6" class="external" />
-    <text x="780" y="175" class="label-ext">Storage S3/R2</text>
+    <text x="780" y="175" class="label-ext">Azure Blob Storage</text>
     <text x="780" y="190" class="label-sub">Vídeos definitivos</text>
   </g>
   <g>

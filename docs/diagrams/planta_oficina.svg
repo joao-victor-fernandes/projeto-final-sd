@@ -78,7 +78,7 @@
   <rect x="640" y="80" width="220" height="100" fill="#e7f3ff" stroke="#007bff" stroke-width="2" rx="6" />
   <text x="750" y="110" class="label-title">Nuvem / Datacenter</text>
   <text x="750" y="130" class="label-sub">Backend, Postgres, RabbitMQ</text>
-  <text x="750" y="150" class="label-sub">Workers, Storage S3/R2</text>
+  <text x="750" y="150" class="label-sub">Workers, Azure Blob Storage</text>
 
   <path d="M 230 480 Q 600 400 640 130" class="net" />
   <text x="500" y="395" class="label-sub" fill="#007bff">Internet (federation + sync)</text>

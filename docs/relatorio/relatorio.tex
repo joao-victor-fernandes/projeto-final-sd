@@ -105,7 +105,7 @@ Os requisitos n\~ao-funcionais s\~ao igualmente importantes. Resili\^encia: a of
 
 \subsubsection*{Componentes envolvidos}
 
-Identificamos os seguintes componentes do dom\'\i nio: c\^ameras IP nos galp\~oes; tablets dos mec\^anicos; recep\c{c}\~ao com terminal pr\'oprio; almoxarifado com estoque informatizado; sala do gestor; servidor local de borda (\emph{edge gateway}) com mini-broker, NAS para v\'\i deos brutos e \emph{switch} L2/L3; conex\~ao com a nuvem; backend central na nuvem; PostgreSQL gerenciado; cluster RabbitMQ na nuvem; \emph{storage} S3/R2 para v\'\i deos definitivos; workers especializados em m\'\i dia, notifica\c{c}\~ao, estoque, auditoria, relat\'orios e billing; portal web acessado por todos os atores.
+Identificamos os seguintes componentes do dom\'\i nio: c\^ameras IP nos galp\~oes; tablets dos mec\^anicos; recep\c{c}\~ao com terminal pr\'oprio; almoxarifado com estoque informatizado; sala do gestor; servidor local de borda (\emph{edge gateway}) com mini-broker, NAS para v\'\i deos brutos e \emph{switch} L2/L3; conex\~ao com a nuvem; backend central na nuvem; PostgreSQL gerenciado; cluster RabbitMQ na nuvem; Azure Blob Storage para v\'\i deos definitivos; workers especializados em m\'\i dia, notifica\c{c}\~ao, estoque, auditoria, relat\'orios e billing; portal web acessado por todos os atores.
 
 \subsubsection*{Justificativa para solu\c{c}\~ao distribu\'\i da}
 
@@ -133,7 +133,7 @@ A arquitetura proposta combina cliente-servidor (frontend e backend via HTTP/RES
 
 \subsubsection*{Modelo C4 \(textendash\) N\'\i vel 1: Contexto}
 
-A Figura~\ref{fig:c4n1} mostra os atores (cliente, mec\^anico, atendente, gestor, administrador) e os sistemas externos (c\^ameras IP, storage S3/R2, gateways email/SMS/WhatsApp, ERP de pe\c{c}as, sistema de pagamento, NF-e). O sistema central concentra a l\'ogica de neg\'ocio e \'e o ponto \'unico de coordena\c{c}\~ao.
+A Figura~\ref{fig:c4n1} mostra os atores (cliente, mec\^anico, atendente, gestor, administrador) e os sistemas externos (c\^ameras IP, Azure Blob Storage, gateways email/SMS/WhatsApp, ERP de pe\c{c}as, sistema de pagamento, NF-e). O sistema central concentra a l\'ogica de neg\'ocio e \'e o ponto \'unico de coordena\c{c}\~ao.
 
 \begin{figure}[H]
 \centering
@@ -144,7 +144,7 @@ A Figura~\ref{fig:c4n1} mostra os atores (cliente, mec\^anico, atendente, gestor
 
 \subsubsection*{Modelo C4 \(textendash\) N\'\i vel 2: Containers}
 
-A Figura~\ref{fig:c4n2} detalha os containers organizados em duas zonas: \emph{edge} (oficina) e \emph{cloud} (nuvem). A separa\c{c}\~ao em zonas \'e arquitet\^onica, n\~ao apenas log\'\i stica. Na borda ficam: c\^ameras IP, tablets dos mec\^anicos, terminais da recep\c{c}\~ao e do almoxarifado, \emph{edge gateway} (API local que recebe uploads e armazena temporariamente), \emph{NAS} para v\'\i deos brutos, e mini-broker RabbitMQ federado com o broker da nuvem. Na nuvem ficam: frontend (Next.js), backend (Express), PostgreSQL gerenciado, storage S3/R2 de v\'\i deos definitivos, cluster RabbitMQ e os workers.
+A Figura~\ref{fig:c4n2} detalha os containers organizados em duas zonas: \emph{edge} (oficina) e \emph{cloud} (nuvem). A separa\c{c}\~ao em zonas \'e arquitet\^onica, n\~ao apenas log\'\i stica. Na borda ficam: c\^ameras IP, tablets dos mec\^anicos, terminais da recep\c{c}\~ao e do almoxarifado, \emph{edge gateway} (API local que recebe uploads e armazena temporariamente), \emph{NAS} para v\'\i deos brutos, e mini-broker RabbitMQ federado com o broker da nuvem. Na nuvem ficam: frontend (Next.js), backend (Express), PostgreSQL gerenciado, Azure Blob Storage para v\'\i deos definitivos, cluster RabbitMQ e os workers.
 
 \begin{figure}[H]
 \centering
@@ -348,7 +348,7 @@ As limita\c{c}\~oes do prot\'otipo incluem: (i) sess\~oes mantidas em mem\'oria,
 
 \subsubsection*{Trabalhos futuros}
 
-Como evolu\c{c}\~oes priorit\'arias: implantar o \emph{edge gateway} real com mini-broker federado; integrar com gateways reais de notifica\c{c}\~ao por Headers Exchange; adicionar push em tempo real via WebSocket; processar m\'\i dia com FFmpeg gerando \emph{thumbnails} e transcodifica\c{c}\~ao; implementar o \texttt{report-worker} para gerar PDF do servi\c{c}o conclu\'\i do; adicionar \emph{quorum queues} para alta disponibilidade do broker; mover armazenamento de v\'\i deos definitivos para S3/R2; adicionar observabilidade com Prometheus e Grafana; implementar \emph{circuit breaker} entre backend e workers; e fechar a integra\c{c}\~ao com sistema fiscal NF-e.
+Como evolu\c{c}\~oes priorit\'arias: implantar o \emph{edge gateway} real com mini-broker federado; integrar com gateways reais de notifica\c{c}\~ao por Headers Exchange; adicionar push em tempo real via WebSocket; processar m\'\i dia com FFmpeg gerando \emph{thumbnails} e transcodifica\c{c}\~ao; implementar o \texttt{report-worker} para gerar PDF do servi\c{c}o conclu\'\i do; adicionar \emph{quorum queues} para alta disponibilidade do broker; mover armazenamento de v\'\i deos definitivos para Azure Blob Storage; adicionar observabilidade com Prometheus e Grafana; implementar \emph{circuit breaker} entre backend e workers; e fechar a integra\c{c}\~ao com sistema fiscal NF-e.
 
 \section{Conclus\~ao}
 

@@ -110,6 +110,8 @@ Catalogo de eventos publicados pelo backend: ver `backend/src/rabbit.js` (`ROUTI
 - **Relatorio tecnico** (12 paginas, LaTeX): `docs/relatorio/relatorio.pdf`
 - **Slides** (20 slides, PPTX + PDF): `docs/slides/slides.pptx`
 - **Diagramas** (SVG + PDF + PNG): `docs/diagrams/`
+- **Deploy na Azure**: `docs/deploy-azure.md`
+- **Registro da implantacao**: `docs/registro-deploy-azure.md`
 
 ## Smoke test
 

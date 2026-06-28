@@ -75,7 +75,7 @@
   <text x="570" y="245" class="label-sub">Metadados, OS, peças, audit</text>
 
   <rect x="710" y="200" width="220" height="60" rx="6" class="data" />
-  <text x="820" y="225" class="label-title">Storage S3/R2</text>
+  <text x="820" y="225" class="label-title">Azure Blob Storage</text>
   <text x="820" y="245" class="label-sub">Vídeos definitivos</text>
 
   <rect x="460" y="290" width="470" height="80" rx="6" class="broker" />

@@ -352,7 +352,7 @@ add_bullets(s, Inches(7.0), Inches(2.0), Inches(6.0), Inches(4.5), [
     "Cluster RabbitMQ com quorum queues em K8s",
     "HPA por worker, observabilidade Prometheus/Grafana",
     "Integração real com email/SMS/WhatsApp (Headers)",
-    "Storage S3/R2 para vídeos definitivos",
+    "Azure Blob Storage para videos definitivos",
     "Report worker, billing worker, NF-e",
     "Push em tempo real via WebSocket"
 ], size=14)
@@ -402,7 +402,7 @@ add_bullets(s, Inches(0.6), Inches(2.0), Inches(6.0), Inches(4.5), [
     "Edge gateway só na apresentação",
     "Sem WebSocket — cliente faz polling manual",
     "Sem integração real com email/SMS/WhatsApp",
-    "Sem upload para S3/R2"
+    "Sem upload para Azure Blob Storage"
 ], size=14)
 
 add_text(s, Inches(7.0), Inches(1.5), Inches(6.0), Inches(0.5),
