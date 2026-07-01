@@ -55,6 +55,10 @@ Usuário com visão operacional e gerencial do sistema, responsável por acompan
 
 Perfil técnico ou administrativo com permissões ampliadas para gestão de usuários, permissões e parâmetros do sistema.
 
+### 4.5 Atendente
+
+Usuário de recepção/balcão responsável apenas pelo cadastro inicial: registrar novos clientes (e seus veículos) e abrir ordens de serviço. Após a abertura da OS, a atendente **não** acompanha seu andamento, não visualiza etapas, orçamento, mídias, estoque ou auditoria — o acompanhamento passa a ser responsabilidade do mecânico, do cliente e do gestor/administrador.
+
 ---
 
 ## 5. Requisitos funcionais
@@ -63,7 +67,7 @@ Perfil técnico ou administrativo com permissões ampliadas para gestão de usu�
 
 **RF001.** O sistema deve permitir autenticação de usuários por login e senha.
 
-**RF002.** O sistema deve permitir perfis de acesso distintos, no mínimo: cliente, mecânico, gestor e administrador.
+**RF002.** O sistema deve permitir perfis de acesso distintos, no mínimo: cliente, mecânico, gestor, administrador e atendente.
 
 **RF003.** O sistema deve restringir funcionalidades conforme o perfil do usuário autenticado.
 
@@ -73,11 +77,15 @@ Perfil técnico ou administrativo com permissões ampliadas para gestão de usu�
 
 **RF006.** O sistema deve permitir que gestor e administrador consultem todas as ordens de serviço da oficina.
 
+**RF006-A.** O sistema deve permitir que a atendente autentique-se e acesse exclusivamente as funcionalidades de cadastro de clientes/veículos e abertura de ordens de serviço.
+
+**RF006-B.** O sistema não deve permitir que a atendente visualize ou acompanhe ordens de serviço já criadas, nem acesse estoque, orçamento, mídias ou auditoria.
+
 ---
 
 ## 5.2 Cadastro de usuários e veículos
 
-**RF007.** O sistema deve permitir o cadastro de clientes.
+**RF007.** O sistema deve permitir o cadastro de clientes, inclusive por atendentes de recepção.
 
 **RF008.** O sistema deve permitir o cadastro de mecânicos.
 
@@ -91,7 +99,7 @@ Perfil técnico ou administrativo com permissões ampliadas para gestão de usu�
 
 ## 5.3 Ordens de serviço
 
-**RF012.** O sistema deve permitir criar uma ordem de serviço vinculada a um cliente e a um veículo.
+**RF012.** O sistema deve permitir criar uma ordem de serviço vinculada a um cliente e a um veículo, inclusive por atendentes de recepção.
 
 **RF013.** O sistema deve permitir registrar dados básicos da ordem de serviço, como descrição do problema, data de abertura, status e responsável técnico.
 

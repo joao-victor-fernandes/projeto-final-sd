@@ -18,6 +18,10 @@ const demoAccounts = [
     role: "CLIENTE", name: "Joao Silva", email: "joao@oficina.demo", password: "cliente123",
     notes: "Acompanha a própria ordem e aprova orçamentos."
   },
+  {
+    role: "ATENDENTE", name: "Beatriz Lima", email: "beatriz@oficina.demo", password: "atendente123",
+    notes: "Apenas cadastra clientes/veículos e abre ordens de serviço."
+  },
 ];
 
 const TERMINAL_STEPS = new Set(["ENTREGUE", "CANCELADO"]);
@@ -127,6 +131,10 @@ function getTabsForRole(role) {
       { id: "stock", label: "Estoque" },
       { id: "audit", label: "Auditoria" },
     ];
+  }
+  if (role === "ATENDENTE") {
+    // Atendente só cadastra clientes/veículos e abre OS — não acompanha ordens, estoque ou auditoria.
+    return [{ id: "registrations", label: "Cadastros" }];
   }
   // MECANICO
   return [
@@ -256,7 +264,7 @@ export function DemoClient({ debugMode = false }) {
 
   useEffect(() => {
     if (!token || !session) return;
-    if (["MECANICO", "ADMINISTRADOR"].includes(session.role)) {
+    if (["MECANICO", "ADMINISTRADOR", "ATENDENTE"].includes(session.role)) {
       loadOperatorData(token).catch(() => { });
     } else {
       loadCatalogParts(token).catch(() => { });
@@ -305,7 +313,7 @@ export function DemoClient({ debugMode = false }) {
       if (!r.ok) { setMessage(p.message || "Falha ao autenticar."); return; }
       window.localStorage.setItem("demo-token", p.token);
       setToken(p.token); setSession(p.user);
-      setActiveTab("orders"); setMessage("");
+      setActiveTab(p.user.role === "ATENDENTE" ? "registrations" : "orders"); setMessage("");
       await refresh(p.token);
     } catch (_) {
       setMessage(`Não foi possível conectar ao backend em ${API_BASE_URL}.`);
@@ -638,6 +646,7 @@ export function DemoClient({ debugMode = false }) {
 
   // ── Role flags ────────────────────────────────────────────────────────────────
   const isOperator = ["MECANICO", "ADMINISTRADOR"].includes(session.role);
+  const canRegister = ["MECANICO", "ADMINISTRADOR", "ATENDENTE"].includes(session.role);
   const isMechanic = session.role === "MECANICO";
   const isClient = session.role === "CLIENTE";
   const isTerminal = currentOrder ? TERMINAL_STEPS.has(currentOrder.step) : false;
@@ -1265,7 +1274,7 @@ export function DemoClient({ debugMode = false }) {
         )}
 
         {/* ── ABA: Cadastros ──────────────────────────────────────────────────── */}
-        {activeTab === "registrations" && isOperator && (
+        {activeTab === "registrations" && canRegister && (
           <div className="panel">
             <h2>Cadastros</h2>
 

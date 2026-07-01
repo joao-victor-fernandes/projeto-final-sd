@@ -229,6 +229,81 @@ test("mechanic upload persists media metadata and publishes event", async () => 
   assert.equal(fs.readdirSync(uploadsDir).length, 1);
 });
 
+test("attendant can register a customer", async () => {
+  const token = await loginAs("beatriz@oficina.demo", "atendente123");
+
+  const response = await request(app)
+    .post("/api/customers")
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      name: "Cliente Novo",
+      email: "clientenovo@oficina.demo",
+      password: "cliente345"
+    });
+
+  assert.equal(response.status, 201);
+  assert.equal(response.body.customer.role, "CLIENTE");
+});
+
+test("attendant can open a work order", async () => {
+  const token = await loginAs("beatriz@oficina.demo", "atendente123");
+
+  const vehiclesResponse = await request(app)
+    .get("/api/vehicles")
+    .set("Authorization", `Bearer ${token}`);
+
+  assert.equal(vehiclesResponse.status, 200);
+  const vehicleId = vehiclesResponse.body[0].id;
+
+  const response = await request(app)
+    .post("/api/work-orders")
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      vehicleId,
+      title: "Barulho no motor",
+      description: "Cliente relatou barulho ao acelerar."
+    });
+
+  assert.equal(response.status, 201);
+  assert.equal(response.body.vehicleId, vehicleId);
+});
+
+test("attendant does not see any work order in the portal", async () => {
+  const token = await loginAs("beatriz@oficina.demo", "atendente123");
+
+  const response = await request(app)
+    .get("/api/portal")
+    .set("Authorization", `Bearer ${token}`);
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(response.body.workOrders, []);
+});
+
+test("attendant cannot upload media", async () => {
+  const token = await loginAs("beatriz@oficina.demo", "atendente123");
+
+  const response = await request(app)
+    .post("/api/work-orders/os-1001/media")
+    .set("Authorization", `Bearer ${token}`)
+    .attach("files", Buffer.from("fake-video"), "teste.mp4");
+
+  assert.equal(response.status, 403);
+});
+
+test("attendant cannot access stock or audit manager routes", async () => {
+  const token = await loginAs("beatriz@oficina.demo", "atendente123");
+
+  const stockResponse = await request(app)
+    .get("/api/manager/stock")
+    .set("Authorization", `Bearer ${token}`);
+  assert.equal(stockResponse.status, 403);
+
+  const auditResponse = await request(app)
+    .get("/api/manager/audit")
+    .set("Authorization", `Bearer ${token}`);
+  assert.equal(auditResponse.status, 403);
+});
+
 test("internal status endpoint updates media processing status", async () => {
   const token = await loginAs("maria@oficina.demo", "mecanico123");
 

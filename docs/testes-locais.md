@@ -56,6 +56,11 @@ Credenciais do PostgreSQL da demo:
 - email: `ana@oficina.demo`
 - senha: `admin123`
 
+### Atendente
+
+- email: `beatriz@oficina.demo`
+- senha: `atendente123`
+
 ## 4. Fluxo sugerido para demonstracao
 
 ### Etapa A - entrar como cliente
@@ -143,6 +148,18 @@ Resultado esperado:
 Resultado esperado:
 
 - o administrador representa o perfil tecnico com acesso ampliado
+
+### Etapa F - entrar como atendente
+
+1. Sair da sessao atual
+2. Entrar com `beatriz@oficina.demo`
+3. Confirmar que a unica aba disponivel e "Cadastros"
+4. Cadastrar um cliente, cadastrar um veiculo vinculado a ele e abrir uma OS para esse veiculo
+
+Resultado esperado:
+
+- a atendente nao ve as abas de Ordens, Linha do Tempo, Notificacoes, Estoque ou Auditoria
+- apos abrir a OS, a atendente nao tem como acompanhar seu andamento (nao aparece em nenhuma lista de ordens para ela)
 
 ## 5. Testes simples por requisito funcional
 

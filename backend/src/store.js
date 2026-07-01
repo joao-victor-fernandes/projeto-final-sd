@@ -25,7 +25,8 @@ const seedUsers = [
   { id: "mechanic-1", role: "MECANICO", name: "Maria Souza", email: "maria@oficina.demo", password: "mecanico123" },
   { id: "admin-1", role: "ADMINISTRADOR", name: "Ana Martins", email: "ana@oficina.demo", password: "admin123" },
   { id: "client-2", role: "CLIENTE", name: "Fernanda Costa", email: "fernanda@oficina.demo", password: "cliente234" },
-  { id: "mechanic-2", role: "MECANICO", name: "Paulo Rocha", email: "paulo@oficina.demo", password: "mecanico234" }
+  { id: "mechanic-2", role: "MECANICO", name: "Paulo Rocha", email: "paulo@oficina.demo", password: "mecanico234" },
+  { id: "attendant-1", role: "ATENDENTE", name: "Beatriz Lima", email: "beatriz@oficina.demo", password: "atendente123" }
 ];
 
 const seedVehicles = [
@@ -301,7 +302,7 @@ export async function resetDatabase() {
   await seedDatabase();
 }
 
-// Limpa dados de demo mantendo peças e usuários staff (MECANICO/ADMINISTRADOR).
+// Limpa dados de demo mantendo peças e usuários staff (MECANICO/ADMINISTRADOR/ATENDENTE).
 // Joao Silva é sempre recriado como cliente padrão disponível de imediato.
 export async function debugResetDatabase() {
   await pool.query(`truncate table work_orders cascade`);

@@ -18,6 +18,8 @@ Os testes automatizados atuais focam no backend e cobrem o nucleo do MVP:
 - upload autenticado de mídia
 - persistencia de metadados no PostgreSQL
 - atualizacao de status interno de processamento
+- cadastro de cliente e abertura de OS pela atendente
+- restricao da atendente ao acompanhamento de ordens, estoque e auditoria
 
 ### Onde estão
 
@@ -93,6 +95,17 @@ Validar:
 
 - ve todas as ordens
 - representa o perfil de acesso ampliado
+
+#### Atendente
+
+- email: `beatriz@oficina.demo`
+- senha: `atendente123`
+
+Validar:
+
+- so enxerga a aba "Cadastros"
+- consegue cadastrar cliente, cadastrar veiculo e abrir ordem de servico
+- nao consegue acompanhar ordens, nem acessar estoque, midias ou auditoria
 
 ### 2.3 Upload e processamento
 

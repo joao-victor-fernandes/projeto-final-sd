@@ -179,10 +179,11 @@ O seed e feito automaticamente na inicializacao do backend se o banco estiver va
 
 As contas demo principais sao:
 
-- `joao@oficina.demo` / `cliente123`
-- `maria@oficina.demo` / `mecanico123`
-- `carlos@oficina.demo` / `gestor123`
-- `ana@oficina.demo` / `admin123`
+- `joao@oficina.demo` / `cliente123` (CLIENTE)
+- `maria@oficina.demo` / `mecanico123` (MECANICO)
+- `carlos@oficina.demo` / `gestor123` (GESTOR)
+- `ana@oficina.demo` / `admin123` (ADMINISTRADOR)
+- `beatriz@oficina.demo` / `atendente123` (ATENDENTE — so cadastra clientes/veiculos e abre OS)
 
 ## 9. Como inspecionar o banco
 

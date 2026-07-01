@@ -48,8 +48,18 @@ docker compose down -v
 | MECANICO | maria@oficina.demo | mecanico123 |
 | GESTOR | carlos@oficina.demo | gestor123 |
 | ADMINISTRADOR | ana@oficina.demo | admin123 |
+| ATENDENTE | beatriz@oficina.demo | atendente123 |
 | CLIENTE (2) | fernanda@oficina.demo | cliente234 |
 | MECANICO (2) | paulo@oficina.demo | mecanico234 |
+
+## Perfis de acesso
+
+| Perfil | O que pode fazer |
+|---|---|
+| CLIENTE | Acompanha as proprias ordens, aprova/reprova orcamento, ve midias e notificacoes |
+| MECANICO | Ve as ordens atribuidas, avanca etapas, envia midia, monta orcamento, cadastra clientes/veiculos e abre OS |
+| ADMINISTRADOR | Acesso total: todas as ordens, estoque, auditoria e cadastros |
+| **ATENDENTE** | **Apenas cadastra clientes/veiculos e abre novas ordens de servico** - nao acompanha o andamento das OS, nao ve estoque, midias, orcamento nem auditoria |
 
 ## Fluxos para testar
 
@@ -59,6 +69,7 @@ docker compose down -v
 4. **Enviar midia** - fazer upload de imagens/videos. O `media-worker` muda status `UPLOADED -> PROCESSING -> PROCESSED`.
 5. **Trocar para o cliente** (`joao@oficina.demo`) e ver a linha do tempo, notificacoes e midias.
 6. **Abrir RabbitMQ UI** em localhost:15672 e olhar `Queues` para ver as mensagens fluindo.
+7. **Login como atendente** (`beatriz@oficina.demo`) - a unica aba disponivel e "Cadastros": cadastrar um cliente, um veiculo e abrir uma OS. Ela nao tem acesso as abas de Ordens, Estoque ou Auditoria.
 
 ## Estrutura do projeto
 

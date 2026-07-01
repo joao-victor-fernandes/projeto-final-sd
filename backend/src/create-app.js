@@ -138,7 +138,7 @@ export function createApp(options = {}) {
   app.get(
     "/api/customers",
     requireAuth,
-    requireAnyRole(["MECANICO", "ADMINISTRADOR"]),
+    requireAnyRole(["MECANICO", "ADMINISTRADOR", "ATENDENTE"]),
     asyncHandler(async (_req, res) => {
       res.json(await listCustomers());
     })
@@ -147,7 +147,7 @@ export function createApp(options = {}) {
   app.post(
     "/api/customers",
     requireAuth,
-    requireAnyRole(["MECANICO", "ADMINISTRADOR"]),
+    requireAnyRole(["MECANICO", "ADMINISTRADOR", "ATENDENTE"]),
     asyncHandler(async (req, res) => {
       const { name, email, password, vehicle } = req.body || {};
       const plate = vehicle?.plate;
@@ -199,7 +199,7 @@ export function createApp(options = {}) {
   app.post(
     "/api/vehicles",
     requireAuth,
-    requireAnyRole(["MECANICO", "ADMINISTRADOR"]),
+    requireAnyRole(["MECANICO", "ADMINISTRADOR", "ATENDENTE"]),
     asyncHandler(async (req, res) => {
       const { ownerId, plate, model } = req.body || {};
       if (!ownerId || !plate || !model) {
@@ -232,7 +232,7 @@ export function createApp(options = {}) {
   app.get(
     "/api/vehicles",
     requireAuth,
-    requireAnyRole(["MECANICO", "ADMINISTRADOR"]),
+    requireAnyRole(["MECANICO", "ADMINISTRADOR", "ATENDENTE"]),
     asyncHandler(async (_req, res) => {
       res.json(await listAllVehicles());
     })
@@ -241,7 +241,7 @@ export function createApp(options = {}) {
   app.get(
     "/api/customers/:id/vehicles",
     requireAuth,
-    requireAnyRole(["MECANICO", "ADMINISTRADOR"]),
+    requireAnyRole(["MECANICO", "ADMINISTRADOR", "ATENDENTE"]),
     asyncHandler(async (req, res) => {
       res.json(await listVehiclesByOwner(req.params.id));
     })
@@ -250,7 +250,7 @@ export function createApp(options = {}) {
   app.get(
     "/api/mechanics",
     requireAuth,
-    requireAnyRole(["MECANICO", "ADMINISTRADOR"]),
+    requireAnyRole(["MECANICO", "ADMINISTRADOR", "ATENDENTE"]),
     asyncHandler(async (_req, res) => {
       res.json(await listMechanics());
     })
@@ -261,7 +261,7 @@ export function createApp(options = {}) {
   app.post(
     "/api/work-orders",
     requireAuth,
-    requireAnyRole(["MECANICO", "ADMINISTRADOR"]),
+    requireAnyRole(["MECANICO", "ADMINISTRADOR", "ATENDENTE"]),
     asyncHandler(async (req, res) => {
       const { vehicleId, mechanicIds, title, description } = req.body || {};
       if (!vehicleId || !title || !description) {
