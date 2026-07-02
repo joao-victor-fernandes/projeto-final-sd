@@ -738,12 +738,20 @@ export function DemoClient({ debugMode = false }) {
                   value={revisionForm.description}
                   onChange={(e) => setRevisionForm((f) => ({ ...f, description: e.target.value }))} />
               </label>
+
               <label>
                 <div className="label">Valor (R$)</div>
-                <input className="text-input" type="number" min="0.01" step="0.01" placeholder="0,00"
-                  value={revisionForm.priceCents}
-                  onChange={(e) => setRevisionForm((f) => ({ ...f, priceCents: e.target.value }))} />
+                <input
+                  className="text-input"
+                  value={
+                    budgetItemForm.priceCents
+                      ? currency(Number(budgetItemForm.priceCents))
+                      : ""
+                  }
+                  readOnly
+                />
               </label>
+
             </div>
             <div className="actions">
               <button className="button" type="submit">+ Adicionar item ao orçamento</button>
@@ -947,11 +955,18 @@ export function DemoClient({ debugMode = false }) {
                       value={budgetItemForm.description}
                       onChange={(e) => setBudgetItemForm((f) => ({ ...f, description: e.target.value }))} />
                   </label>
+
                   <label>
-                    <div className="label">Valor (R$)</div>
-                    <input className="text-input" type="number" min="0.01" step="0.01" placeholder="0,00"
-                      value={budgetItemForm.priceCents}
-                      onChange={(e) => setBudgetItemForm((f) => ({ ...f, priceCents: e.target.value }))} />
+                    <div className="label">Valor atual da peça</div>
+                    <input
+                      className="text-input"
+                      value={
+                        budgetItemForm.priceCents
+                          ? currency(Number(budgetItemForm.priceCents))
+                          : ""
+                      }
+                      readOnly
+                    />
                   </label>
                 </div>
                 <div className="actions">
@@ -1375,7 +1390,7 @@ export function DemoClient({ debugMode = false }) {
                     className="text-input"
                     type="text"
                     placeholder="Ex: ABC1234 ou ABC1D23"
-                    maxLength={7} 
+                    maxLength={7}
                     value={vehicleForm.plate}
                     onChange={(e) => {
                       const treatedValue = e.target.value
