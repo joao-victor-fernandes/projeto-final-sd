@@ -58,7 +58,8 @@ docker compose down -v
 |---|---|
 | CLIENTE | Acompanha as proprias ordens, aprova/reprova orcamento, ve midias e notificacoes |
 | MECANICO | Ve as ordens atribuidas, avanca etapas, envia midia, monta orcamento, cadastra clientes/veiculos e abre OS |
-| ADMINISTRADOR | Acesso total: todas as ordens, estoque, auditoria e cadastros |
+| GESTOR | Dashboard gerencial (metricas agregadas), ve todas as ordens (somente leitura), estoque, auditoria e envia avisos globais |
+| ADMINISTRADOR | Acesso total: dashboard, todas as ordens, estoque, auditoria e cadastros |
 | **ATENDENTE** | **Apenas cadastra clientes/veiculos e abre novas ordens de servico** - nao acompanha o andamento das OS, nao ve estoque, midias, orcamento nem auditoria |
 
 ## Fluxos para testar
@@ -70,6 +71,7 @@ docker compose down -v
 5. **Trocar para o cliente** (`joao@oficina.demo`) e ver a linha do tempo, notificacoes e midias.
 6. **Abrir RabbitMQ UI** em localhost:15672 e olhar `Queues` para ver as mensagens fluindo.
 7. **Login como atendente** (`beatriz@oficina.demo`) - a unica aba disponivel e "Cadastros": cadastrar um cliente, um veiculo e abrir uma OS. Ela nao tem acesso as abas de Ordens, Estoque ou Auditoria.
+8. **Login como gestor** (`carlos@oficina.demo`) - abre direto no **Dashboard Gerencial** (`/api/manager/dashboard`): KPIs de ordens e faturamento, ordens por etapa, carga por mecanico, solicitacoes de pecas, estoque baixo, eventos do broker e atividade recente.
 
 ## Estrutura do projeto
 

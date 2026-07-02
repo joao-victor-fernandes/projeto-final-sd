@@ -15,6 +15,10 @@ const demoAccounts = [
     notes: "Acesso total ao sistema."
   },
   {
+    role: "GESTOR", name: "Carlos Pereira", email: "carlos@oficina.demo", password: "gestor123",
+    notes: "Dashboard gerencial, estoque, auditoria e avisos globais."
+  },
+  {
     role: "CLIENTE", name: "Joao Silva", email: "joao@oficina.demo", password: "cliente123",
     notes: "Acompanha a própria ordem e aprova orçamentos."
   },
@@ -124,10 +128,21 @@ function getTabsForRole(role) {
   }
   if (role === "ADMINISTRADOR") {
     return [
+      { id: "dashboard", label: "Dashboard" },
       { id: "orders", label: "Ordens" },
       { id: "timeline", label: "Linha do Tempo" },
       { id: "notifications", label: "Notificações" },
       { id: "registrations", label: "Cadastros" },
+      { id: "stock", label: "Estoque" },
+      { id: "audit", label: "Auditoria" },
+    ];
+  }
+  if (role === "GESTOR") {
+    return [
+      { id: "dashboard", label: "Dashboard" },
+      { id: "orders", label: "Ordens" },
+      { id: "timeline", label: "Linha do Tempo" },
+      { id: "notifications", label: "Notificações" },
       { id: "stock", label: "Estoque" },
       { id: "audit", label: "Auditoria" },
     ];
@@ -165,6 +180,7 @@ export function DemoClient({ debugMode = false }) {
   const [resetConfirm, setResetConfirm] = useState(false);
   const [stockData, setStockData] = useState(null);
   const [auditData, setAuditData] = useState(null);
+  const [dashboardData, setDashboardData] = useState(null);
   const [expandedAuditId, setExpandedAuditId] = useState(null);
   const [commentText, setCommentText] = useState("");
 
@@ -243,12 +259,14 @@ export function DemoClient({ debugMode = false }) {
   }
 
   async function loadManagerData(t = token) {
-    const [stockR, auditR] = await Promise.all([
+    const [stockR, auditR, dashR] = await Promise.all([
       fetch(`${API_BASE_URL}/api/manager/stock`, { headers: getHeaders(t) }),
       fetch(`${API_BASE_URL}/api/manager/audit`, { headers: getHeaders(t) }),
+      fetch(`${API_BASE_URL}/api/manager/dashboard`, { headers: getHeaders(t) }),
     ]);
     if (stockR.ok) setStockData(await stockR.json());
     if (auditR.ok) setAuditData(await auditR.json());
+    if (dashR.ok) setDashboardData(await dashR.json());
   }
 
   useEffect(() => {
@@ -269,7 +287,7 @@ export function DemoClient({ debugMode = false }) {
     } else {
       loadCatalogParts(token).catch(() => { });
     }
-    if (session.role === "ADMINISTRADOR") {
+    if (["GESTOR", "ADMINISTRADOR"].includes(session.role)) {
       loadManagerData(token).catch(() => { });
     }
   }, [token, session?.id]);
@@ -313,7 +331,11 @@ export function DemoClient({ debugMode = false }) {
       if (!r.ok) { setMessage(p.message || "Falha ao autenticar."); return; }
       window.localStorage.setItem("demo-token", p.token);
       setToken(p.token); setSession(p.user);
-      setActiveTab(p.user.role === "ATENDENTE" ? "registrations" : "orders"); setMessage("");
+      setActiveTab(
+        p.user.role === "ATENDENTE" ? "registrations"
+          : ["GESTOR", "ADMINISTRADOR"].includes(p.user.role) ? "dashboard"
+            : "orders"
+      ); setMessage("");
       await refresh(p.token);
     } catch (_) {
       setMessage(`Não foi possível conectar ao backend em ${API_BASE_URL}.`);
@@ -1156,6 +1178,199 @@ export function DemoClient({ debugMode = false }) {
 
       <div className="tab-content">
 
+        {/* ── ABA: Dashboard (GESTOR e ADMINISTRADOR) ──────────────────────── */}
+        {activeTab === "dashboard" && ["GESTOR", "ADMINISTRADOR"].includes(session.role) && (
+          <div className="panel">
+            <div className="topbar" style={{ marginBottom: 20 }}>
+              <h2 style={{ margin: 0 }}>Dashboard Gerencial</h2>
+              <button className="button secondary" type="button" onClick={() => loadManagerData()}>
+                Atualizar
+              </button>
+            </div>
+
+            {!dashboardData ? (
+              <p className="hint">Carregando métricas...</p>
+            ) : (
+              <>
+                {/* KPIs */}
+                <div className="dash-kpis">
+                  <div className="dash-kpi">
+                    <strong>{dashboardData.orders.total}</strong>
+                    <span>ordens no total</span>
+                  </div>
+                  <div className="dash-kpi">
+                    <strong style={{ color: "var(--primary)" }}>{dashboardData.orders.active}</strong>
+                    <span>em andamento</span>
+                  </div>
+                  <div className="dash-kpi">
+                    <strong style={{ color: "var(--success)" }}>{dashboardData.orders.concluded}</strong>
+                    <span>concluídas</span>
+                  </div>
+                  <div className="dash-kpi">
+                    <strong style={{ color: "#b91c1c" }}>{dashboardData.orders.cancelled}</strong>
+                    <span>canceladas</span>
+                  </div>
+                  <div className="dash-kpi">
+                    <strong style={{ color: "var(--success)" }}>{currency(dashboardData.budget.concludedValue)}</strong>
+                    <span>faturado (concluídas)</span>
+                  </div>
+                  <div className="dash-kpi">
+                    <strong style={{ color: "var(--primary)" }}>{currency(dashboardData.budget.activeValue)}</strong>
+                    <span>em orçamentos ativos</span>
+                  </div>
+                  <div className="dash-kpi">
+                    <strong>{dashboardData.media.processed}/{dashboardData.media.total}</strong>
+                    <span>mídias processadas</span>
+                  </div>
+                </div>
+
+                <div className="dash-grid">
+                  {/* Ordens por etapa */}
+                  <div className="dash-card">
+                    <h3>Ordens por etapa</h3>
+                    {(() => {
+                      const byStep = dashboardData.orders.byStep || [];
+                      const order = (stepsMeta.steps || []).map((s) => s.value);
+                      const sorted = [...byStep].sort(
+                        (a, b) => order.indexOf(a.step) - order.indexOf(b.step)
+                      );
+                      const max = Math.max(1, ...sorted.map((s) => s.count));
+                      return sorted.length === 0 ? (
+                        <p className="hint">Sem ordens registradas.</p>
+                      ) : (
+                        <div className="dash-bars">
+                          {sorted.map((s) => (
+                            <div className="dash-bar-row" key={s.step}>
+                              <span className="dash-bar-label">{stepLabel(s.step)}</span>
+                              <div className="dash-bar-track">
+                                <div className="dash-bar-fill"
+                                  style={{ width: `${(s.count / max) * 100}%`, background: stepColor(s.step) }} />
+                              </div>
+                              <span className="dash-bar-value">{s.count}</span>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Carga por mecânico */}
+                  <div className="dash-card">
+                    <h3>OS ativas por mecânico</h3>
+                    {!dashboardData.mechanicLoad?.length ? (
+                      <p className="hint">Nenhum mecânico cadastrado.</p>
+                    ) : (
+                      <div className="dash-bars">
+                        {(() => {
+                          const max = Math.max(1, ...dashboardData.mechanicLoad.map((m) => m.activeOrders));
+                          return dashboardData.mechanicLoad.map((m) => (
+                            <div className="dash-bar-row" key={m.id}>
+                              <span className="dash-bar-label">{m.name}</span>
+                              <div className="dash-bar-track">
+                                <div className="dash-bar-fill"
+                                  style={{ width: `${(m.activeOrders / max) * 100}%`, background: "var(--primary)" }} />
+                              </div>
+                              <span className="dash-bar-value">{m.activeOrders}</span>
+                            </div>
+                          ));
+                        })()}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Solicitações de peças */}
+                  <div className="dash-card">
+                    <h3>Solicitações de peças</h3>
+                    {!dashboardData.partRequestsByStatus?.length ? (
+                      <p className="hint">Nenhuma solicitação registrada.</p>
+                    ) : (
+                      <div className="dash-chips">
+                        {dashboardData.partRequestsByStatus.map((s) => {
+                          const badgeClass =
+                            s.status === "RESERVED" || s.status === "INSTALLED" ? "PROCESSED"
+                              : s.status === "OUT_OF_STOCK" ? "FAILED"
+                                : "UPLOADED";
+                          return (
+                            <div className="dash-chip" key={s.status}>
+                              <span className={`badge ${badgeClass}`}>{s.status}</span>
+                              <strong>{s.count}</strong>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Estoque baixo */}
+                  <div className="dash-card">
+                    <h3>Estoque baixo (≤ 5 unidades)</h3>
+                    {!dashboardData.stock.lowStock?.length ? (
+                      <p className="hint" style={{ color: "var(--success)" }}>
+                        Nenhuma peça com estoque crítico.
+                      </p>
+                    ) : (
+                      <ul className="dash-low-stock">
+                        {dashboardData.stock.lowStock.map((p) => (
+                          <li key={p.id}>
+                            <div>
+                              <strong>{p.name}</strong>
+                              <div className="hint" style={{ fontSize: "0.78rem" }}><code>{p.code}</code></div>
+                            </div>
+                            <span className="badge FAILED">{p.stock} un.</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+
+                  {/* Eventos por routing key */}
+                  <div className="dash-card">
+                    <h3>Eventos no broker (por routing key)</h3>
+                    {!dashboardData.eventsByRoutingKey?.length ? (
+                      <p className="hint">Nenhum evento capturado ainda.</p>
+                    ) : (
+                      <div className="dash-bars">
+                        {(() => {
+                          const max = Math.max(1, ...dashboardData.eventsByRoutingKey.map((e) => e.count));
+                          return dashboardData.eventsByRoutingKey.map((e) => (
+                            <div className="dash-bar-row" key={e.routingKey}>
+                              <span className="dash-bar-label"><code style={{ fontSize: "0.75rem" }}>{e.routingKey}</code></span>
+                              <div className="dash-bar-track">
+                                <div className="dash-bar-fill"
+                                  style={{ width: `${(e.count / max) * 100}%`, background: "var(--text-2)" }} />
+                              </div>
+                              <span className="dash-bar-value">{e.count}</span>
+                            </div>
+                          ));
+                        })()}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Últimos eventos de auditoria */}
+                  <div className="dash-card">
+                    <h3>Atividade recente</h3>
+                    {!dashboardData.recentAudit?.length ? (
+                      <p className="hint">Nenhum evento registrado ainda.</p>
+                    ) : (
+                      <ul className="dash-activity">
+                        {dashboardData.recentAudit.map((ev) => (
+                          <li key={ev.id}>
+                            <div style={{ fontWeight: 600, fontSize: "0.85rem" }}>{auditTitle(ev)}</div>
+                            <div className="hint" style={{ fontSize: "0.78rem" }}>
+                              {new Date(ev.receivedAt).toLocaleString("pt-BR")}
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
         {/* ── ABA: Ordens ─────────────────────────────────────────────────────── */}
         {activeTab === "orders" && (
           <>
@@ -1401,8 +1616,8 @@ export function DemoClient({ debugMode = false }) {
           </div>
         )}
 
-        {/* ── ABA: Estoque (somente ADMINISTRADOR) ─────────────────────────── */}
-        {activeTab === "stock" && session.role === "ADMINISTRADOR" && (
+        {/* ── ABA: Estoque (GESTOR e ADMINISTRADOR) ────────────────────────── */}
+        {activeTab === "stock" && ["GESTOR", "ADMINISTRADOR"].includes(session.role) && (
           <div className="panel">
             <div className="topbar" style={{ marginBottom: 20 }}>
               <h2 style={{ margin: 0 }}>Estoque de Peças</h2>
@@ -1475,8 +1690,8 @@ export function DemoClient({ debugMode = false }) {
           </div>
         )}
 
-        {/* ── ABA: Auditoria (somente ADMINISTRADOR) ───────────────────────── */}
-        {activeTab === "audit" && session.role === "ADMINISTRADOR" && (
+        {/* ── ABA: Auditoria (GESTOR e ADMINISTRADOR) ──────────────────────── */}
+        {activeTab === "audit" && ["GESTOR", "ADMINISTRADOR"].includes(session.role) && (
           <div className="panel">
             <div className="topbar" style={{ marginBottom: 20 }}>
               <h2 style={{ margin: 0 }}>Auditoria do Sistema</h2>

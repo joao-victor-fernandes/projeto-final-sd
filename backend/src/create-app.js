@@ -14,7 +14,7 @@ import {
   createCustomer, createVehicle, listMechanics, listAllVehicles,
   listVehiclesByOwner, createWorkOrder, debugResetDatabase,
   addRevisionItem, addBudgetItem, removeBudgetItem,
-  addMessage, listPartRequests, listAuditEvents
+  addMessage, listPartRequests, listAuditEvents, getDashboardMetrics
 } from "./store.js";
 import {
   publishEvent, publishMediaUploaded, ROUTING_KEYS, broadcast
@@ -681,7 +681,7 @@ export function createApp(options = {}) {
   app.get(
     "/api/manager/stock",
     requireAuth,
-    requireAnyRole(["ADMINISTRADOR"]),
+    requireAnyRole(["GESTOR", "ADMINISTRADOR"]),
     asyncHandler(async (_req, res) => {
       const [parts, partRequests] = await Promise.all([listParts(), listPartRequests()]);
       res.json({ parts, partRequests });
@@ -692,10 +692,20 @@ export function createApp(options = {}) {
   app.get(
     "/api/manager/audit",
     requireAuth,
-    requireAnyRole(["ADMINISTRADOR"]),
+    requireAnyRole(["GESTOR", "ADMINISTRADOR"]),
     asyncHandler(async (_req, res) => {
       const events = await listAuditEvents(100);
       res.json(events);
+    })
+  );
+
+  // ===== Gestor: Dashboard (métricas agregadas) =====
+  app.get(
+    "/api/manager/dashboard",
+    requireAuth,
+    requireAnyRole(["GESTOR", "ADMINISTRADOR"]),
+    asyncHandler(async (_req, res) => {
+      res.json(await getDashboardMetrics());
     })
   );
 
@@ -750,7 +760,7 @@ export function createApp(options = {}) {
   app.post(
     "/api/broadcast",
     requireAuth,
-    requireAnyRole(["ADMINISTRADOR"]),
+    requireAnyRole(["GESTOR", "ADMINISTRADOR"]),
     asyncHandler(async (req, res) => {
       await broadcastPublisher({
         title: req.body?.title || "Aviso da oficina",

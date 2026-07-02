@@ -23,6 +23,7 @@ const pool = new Pool({
 const seedUsers = [
   { id: "client-1", role: "CLIENTE", name: "Joao Silva", email: "joao@oficina.demo", password: "cliente123" },
   { id: "mechanic-1", role: "MECANICO", name: "Maria Souza", email: "maria@oficina.demo", password: "mecanico123" },
+  { id: "manager-1", role: "GESTOR", name: "Carlos Pereira", email: "carlos@oficina.demo", password: "gestor123" },
   { id: "admin-1", role: "ADMINISTRADOR", name: "Ana Martins", email: "ana@oficina.demo", password: "admin123" },
   { id: "client-2", role: "CLIENTE", name: "Fernanda Costa", email: "fernanda@oficina.demo", password: "cliente234" },
   { id: "mechanic-2", role: "MECANICO", name: "Paulo Rocha", email: "paulo@oficina.demo", password: "mecanico234" },
@@ -85,6 +86,7 @@ function sanitizeUser(user) {
 function canAccessWorkOrder(user, order) {
   if (!user || !order) return false;
   if (user.role === "ADMINISTRADOR") return true;
+  if (user.role === "GESTOR") return true;
   if (user.role === "CLIENTE") return order.customerId === user.id;
   if (user.role === "MECANICO") return (order.mechanicIds || []).includes(user.id);
   return false;
@@ -799,6 +801,82 @@ export async function appendAuditEvent(event, routingKey, payload) {
     `insert into audit_events (event, routing_key, payload) values ($1, $2, $3)`,
     [event, routingKey, JSON.stringify(payload)]
   );
+}
+
+// ===== Dashboard do gestor (GESTOR/ADMINISTRADOR) =====
+export async function getDashboardMetrics() {
+  const [
+    ordersByStep,
+    budgetTotals,
+    parts,
+    partRequestsByStatus,
+    mechanicLoad,
+    eventsByRoutingKey,
+    recentAudit,
+    mediaTotals
+  ] = await Promise.all([
+    query(`select step, count(*)::int as count from work_orders group by step`),
+    query(`
+      select
+        count(*)::int as total,
+        count(*) filter (where step in ('CONCLUIDO','ENTREGUE'))::int as concluded,
+        count(*) filter (where step = 'CANCELADO')::int as cancelled,
+        coalesce(sum(budget_parts + budget_labor) filter (where step in ('CONCLUIDO','ENTREGUE')), 0)::numeric as "concludedValue",
+        coalesce(sum(budget_parts + budget_labor) filter (where step not in ('CONCLUIDO','ENTREGUE','CANCELADO')), 0)::numeric as "activeValue"
+      from work_orders
+    `),
+    query(`select id, code, name, price_cents as "priceCents", stock from parts order by stock asc`),
+    query(`select status, count(*)::int as count from part_requests group by status`),
+    query(`
+      select u.id, u.name, count(wom.work_order_id) filter (
+        where wo.step not in ('CONCLUIDO','ENTREGUE','CANCELADO')
+      )::int as "activeOrders"
+      from users u
+      left join work_order_mechanics wom on wom.mechanic_id = u.id
+      left join work_orders wo on wo.id = wom.work_order_id
+      where u.role = 'MECANICO'
+      group by u.id, u.name
+      order by u.name
+    `),
+    query(`
+      select routing_key as "routingKey", count(*)::int as count
+      from audit_events
+      group by routing_key
+      order by count desc
+      limit 10
+    `),
+    listAuditEvents(8),
+    query(`
+      select
+        count(*)::int as total,
+        count(*) filter (where status = 'PROCESSED')::int as processed
+      from media_assets
+    `)
+  ]);
+
+  const totals = budgetTotals[0];
+  return {
+    orders: {
+      total: totals.total,
+      concluded: totals.concluded,
+      cancelled: totals.cancelled,
+      active: totals.total - totals.concluded - totals.cancelled,
+      byStep: ordersByStep
+    },
+    budget: {
+      concludedValue: Number(totals.concludedValue),
+      activeValue: Number(totals.activeValue)
+    },
+    stock: {
+      parts,
+      lowStock: parts.filter((p) => p.stock <= 5)
+    },
+    partRequestsByStatus,
+    mechanicLoad,
+    eventsByRoutingKey,
+    media: mediaTotals[0],
+    recentAudit
+  };
 }
 
 // ===== Snapshots =====
