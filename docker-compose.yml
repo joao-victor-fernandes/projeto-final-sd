@@ -31,7 +31,7 @@ services:
       context: ./backend
     environment:
       PORT: ${PORT:-4000}
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3001}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3001,https://polite-pond-026f8941e.7.azurestaticapps.net}
       RABBITMQ_URL: ${RABBITMQ_URL:-amqp://rabbitmq:5672}
       INTERNAL_API_KEY: ${INTERNAL_API_KEY:-demo-internal-key}
       POSTGRES_HOST: ${POSTGRES_HOST:-postgres}
